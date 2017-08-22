@@ -137,6 +137,7 @@ public class EventPacket<E extends BasicEvent> implements /* EventPacketInterfac
   }
 
   /** Fills this EventPacket with DEFAULT_INITIAL_CAPACITY of the event class */
+  @SuppressWarnings("unchecked")
   protected void initializeEvents() {
     // eventList=new ArrayList<E>(DEFAULT_INITIAL_CAPACITY);
     // elementData = (E[])new BasicEvent[DEFAULT_INITIAL_CAPACITY];
@@ -176,7 +177,7 @@ public class EventPacket<E extends BasicEvent> implements /* EventPacketInterfac
     return getLastTimestamp() - getFirstTimestamp();
   }
 
-  public String getDescription() {
+  public static String getDescription() {
     return "";
   }
 
@@ -275,7 +276,7 @@ public class EventPacket<E extends BasicEvent> implements /* EventPacketInterfac
    *
    * @return an iterator that can iterate over the events. */
   public Iterator<E> inputIterator() {
-    if (inputIterator == null || (inputIterator.getClass() != InItr.class)) {
+    if ((inputIterator == null) || (inputIterator.getClass() != InItr.class)) {
       inputIterator = new InItr();
     } else {
       inputIterator.reset();
@@ -492,6 +493,7 @@ public class EventPacket<E extends BasicEvent> implements /* EventPacketInterfac
 
   /** Enlarges capacity by some factor, then copies all event references to the
    * new packet */
+  @SuppressWarnings("unchecked")
   private void enlargeCapacity() {
     try {
       EventPacket.log.info("enlarging capacity of " + this);
@@ -515,6 +517,7 @@ public class EventPacket<E extends BasicEvent> implements /* EventPacketInterfac
    *
    * @param n capacity
    * @see #fillWithDefaultEvents(int, int) */
+  @SuppressWarnings("unchecked")
   public void allocate(final int n) {
     if (n <= capacity) {
       return;
@@ -732,6 +735,7 @@ public class EventPacket<E extends BasicEvent> implements /* EventPacketInterfac
   /** Sets the constructor for new (empty) events and initializes the packet.
    *
    * @param constructor - a zero argument constructor for the new events. */
+  @SuppressWarnings("unchecked")
   public final void setEventClass(final Constructor<? extends BasicEvent> constructor) {
     this.eventConstructor = (Constructor<E>) constructor;
     this.eventClass = eventConstructor.getDeclaringClass();
@@ -742,6 +746,7 @@ public class EventPacket<E extends BasicEvent> implements /* EventPacketInterfac
    * events.
    *
    * @param eventClass which much extend BasicEvent */
+  @SuppressWarnings("unchecked")
   public final void setEventClass(final Class<? extends BasicEvent> eventClass) {
     this.eventClass = (Class<E>) eventClass;
     try {
@@ -768,7 +773,7 @@ public class EventPacket<E extends BasicEvent> implements /* EventPacketInterfac
   }
 
   /** Sets the time limit enabled or not
-   * 
+   *
    * @param yes to enable time limit for iteration */
   final public void setTimeLimitEnabled(final boolean yes) {
     timeLimitTimer.setEnabled(yes);

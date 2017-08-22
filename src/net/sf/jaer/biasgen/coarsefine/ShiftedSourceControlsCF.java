@@ -292,7 +292,7 @@ public class ShiftedSourceControlsCF extends javax.swing.JPanel implements Obser
     bitPatternTextField.setToolTipText("Bit pattern sent to bias gen");
     add(bitPatternTextField);
   }// </editor-fold>//GEN-END:initComponents
-  // Border selectedBorder=new EtchedBorder(), unselectedBorder=new EmptyBorder(1,1,1,1);
+   // Border selectedBorder=new EtchedBorder(), unselectedBorder=new EmptyBorder(1,1,1,1);
 
   private void formMouseExited(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_formMouseExited
     // setBorder(unselectedBorder); // TODO add your handling code here:

@@ -48,17 +48,17 @@ public class PotPanel extends javax.swing.JPanel implements FocusListener {
     getInsets().set(0, 0, 0, 0);
     buildPanel();
   }// JTable table;
-  //
-  // class PotTable extends JTable{
-  // private PotPanel panel;
-  // private PotArray pots;
-  // TableModel model;
-  // public PotTable(TableModel m,PotPanel p){
-  // super(m);
-  // panel=p;
-  // model=m;
-  // }
-  // }
+   //
+   // class PotTable extends JTable{
+   // private PotPanel panel;
+   // private PotArray pots;
+   // TableModel model;
+   // public PotTable(TableModel m,PotPanel p){
+   // super(m);
+   // panel=p;
+   // model=m;
+   // }
+   // }
 
   private void addBorderSetter(final JComponent s) {
     if (s instanceof JTextField || s instanceof JSlider || s instanceof JComboBox || s instanceof AbstractButton) {

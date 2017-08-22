@@ -361,7 +361,7 @@ public class AEViewer extends javax.swing.JFrame implements PropertyChangeListen
    *
    * @param clazz
    * the class. */
-  public void setPreferredAEChipClass(Class clazz) {
+  public static void setPreferredAEChipClass(Class<?> clazz) {
     prefs.put("AEViewer.aeChipClassName", clazz.getName());
   }
 
@@ -393,9 +393,8 @@ public class AEViewer extends javax.swing.JFrame implements PropertyChangeListen
         File f = startLogging(filename, "2.0");
         if (f == null) {
           return "Couldn't start logging to filename=" + filename + ", startlogging returned " + f + "\n";
-        } else {
-          return "starting logging to " + f.getAbsoluteFile() + "\n";
         }
+        return "starting logging to " + f.getAbsoluteFile() + "\n";
       } else if (command.getCmdName().equals(REMOTE_STOP_LOGGING)) {
         File f = stopLogging(false); // don't confirm filename
         return "stopped logging to file " + f.getAbsolutePath() + "\n";
@@ -403,9 +402,8 @@ public class AEViewer extends javax.swing.JFrame implements PropertyChangeListen
         if ((jaerViewer != null) && jaerViewer.isSyncEnabled() && (jaerViewer.getViewers().size() > 1)) {
           jaerViewer.toggleSynchronizedLogging();
           return "toggled synchronized logging\n";
-        } else {
-          return "couldn't toggle synchronized logging because there is only 1 viewer or sync is disbled";
         }
+        return "couldn't toggle synchronized logging because there is only 1 viewer or sync is disbled";
       } else if (command.getCmdName().equals(REMOTE_ZERO_TIMESTAMPS)) {
         jaerViewer.zeroTimestamps();
       }
@@ -704,21 +702,22 @@ public class AEViewer extends javax.swing.JFrame implements PropertyChangeListen
     recentFiles = new RecentFiles(prefs, fileMenu, new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent evt) {
-        File f = new File(evt.getActionCommand());
+        File file = new File(evt.getActionCommand());
         // log.info("opening "+evt.getActionCommand());
         try {
-          if ((f != null) && f.isFile()) {
-            getAePlayer().startPlayback(f);
-            recentFiles.addFile(f);
-          } else if ((f != null) && f.isDirectory()) {
-            prefs.put("AEViewer.lastFile", f.getCanonicalPath());
+          if (file.isFile()) {
+            getAePlayer().startPlayback(file);
+            recentFiles.addFile(file);
+          } else //
+          if (file.isDirectory()) {
+            prefs.put("AEViewer.lastFile", file.getCanonicalPath());
             aePlayer.openAEInputFileDialog();
-            recentFiles.addFile(f);
+            recentFiles.addFile(file);
           }
         } catch (Exception fnf) {
           fnf.printStackTrace();
           // exceptionOccurred(fnf,this);
-          recentFiles.removeFile(f);
+          recentFiles.removeFile(file);
         }
       }
     });
@@ -888,13 +887,9 @@ public class AEViewer extends javax.swing.JFrame implements PropertyChangeListen
     }
   }
 
-  private boolean isWindows() {
+  private static boolean isWindows() {
     String osName = System.getProperty("os.name");
-    if (osName.startsWith("Windows")) {
-      return true;
-    } else {
-      return false;
-    }
+    return osName.startsWith("Windows");
   }
 
   private int showMultipleInterfacesMessageCount = 0;
@@ -1378,7 +1373,7 @@ public class AEViewer extends javax.swing.JFrame implements PropertyChangeListen
     // these HardwareInterfaceFactories allow choice of multiple alternative interfaces, e.g. for a serial port or
     // network interface
     interfaceMenu.add(new JSeparator());
-    for (Class c : HardwareInterfaceFactory.factories) {
+    for (Class<?> c : HardwareInterfaceFactory.factories) {
       if (HardwareInterfaceFactoryChooserDialog.class.isAssignableFrom(c)) {
         // log.log(Level.INFO, "found hardware chooser class {0}", c);
         try {
@@ -1464,6 +1459,7 @@ public class AEViewer extends javax.swing.JFrame implements PropertyChangeListen
       }
     }
     if (choseOneButton == false) {
+      // ---
     }
     // log.info(sb.toString());
     // TODO add menu item for choosers for things that cannot be easily enumerated like serial port devices, e.g.
@@ -1486,11 +1482,10 @@ public class AEViewer extends javax.swing.JFrame implements PropertyChangeListen
           biasesToggleButton.setVisible(false);
           viewBiasesMenuItem.setEnabled(false);
           return;
-        } else {
-          biasesToggleButton.setEnabled(true);
-          biasesToggleButton.setVisible(true);
-          viewBiasesMenuItem.setEnabled(true);
         }
+        biasesToggleButton.setEnabled(true);
+        biasesToggleButton.setVisible(true);
+        viewBiasesMenuItem.setEnabled(true);
         if (biasgenFrame != null) {
           boolean vis = biasgenFrame.isVisible();
           biasesToggleButton.setSelected(vis);
@@ -1532,7 +1527,7 @@ public class AEViewer extends javax.swing.JFrame implements PropertyChangeListen
         // if it's an aemon, then its an event monitor
         if ((chip.getHardwareInterface() != null) && (chip.getHardwareInterface() instanceof AEMonitorInterface)) {
           aemon = (AEMonitorInterface) chip.getHardwareInterface();
-          if ((aemon == null) || !(aemon instanceof AEMonitorInterface)) {
+          if (aemon == null) {
             fixDeviceControlMenuItems();
             fixLoggingControls();
             fixBiasgenControls();
@@ -1636,7 +1631,7 @@ public class AEViewer extends javax.swing.JFrame implements PropertyChangeListen
   int numEvents;
   AEPacketRaw aeRaw;
   // AEPacket2D ae;
-  private EventPacket packet;
+  private EventPacket<?> packet;
   // EventPacket packetFiltered;
   boolean skipRender = false;
   // volatile private boolean paused=false; // multiple threads will access
