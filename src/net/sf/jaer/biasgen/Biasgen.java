@@ -116,7 +116,7 @@ public class Biasgen implements BiasgenPreferences, Observer, BiasgenHardwareInt
   }
 
   /** A Biasgen has a single PotArray of biases.
-   * 
+   *
    * @return the PotArray */
   public PotArray getPotArray() {
     return this.potArray;
@@ -149,6 +149,7 @@ public class Biasgen implements BiasgenPreferences, Observer, BiasgenHardwareInt
    * Biases and other settings (e.g. master bias resistor) are written to the output stream as an XML file
    * @param os an output stream, typically constructed for a FileOutputStream
    * @throws IOException if the output stream cannot be written */
+  @Override
   public void exportPreferences(java.io.OutputStream os) throws java.io.IOException {
     storePreferences();
     try {
@@ -214,31 +215,34 @@ public class Biasgen implements BiasgenPreferences, Observer, BiasgenHardwareInt
   /** Stores preferences to the Preferences node for the potArray and masterbias. Subclasses must override this method
    * to store additional information!!! For example, a subclass that defines additional configuration information should
    * call storePreferences explicitly for additional configuration. */
+  @Override
   public void storePreferences() {
     log.info("storing preferences to preferences tree");
-    if (potArray != null)
+    if (potArray != null) {
       potArray.storePreferences();
-    if (masterbias != null)
+    }
+    if (masterbias != null) {
       masterbias.storePreferences();
+    }
     getSupport().firePropertyChange(PROPERTY_CHANGE_PREFERENCES_STORED, null, null);
   }
 
   /** Use this method to put a value only if the value is different than the stored Preference value.
    * If the value has never been put to the Preferences then it will be put. If the stored Preference value
    * is different than the value being put it will be put.
-   * 
+   *
    * @param key your key.
    * @param value your value. */
   public void putPref(String key, String value) {
     String s = prefs.get(key, null);
-    if (s == null || !s.equals(value)) {
+    if ((s == null) || !s.equals(value)) {
       prefs.put(key, value);
       // Thread.yield(); // sometimes let's preference change listeners run, but not always
     }
   }
 
   /** Use this method to put a value only if the value is different than the stored Preference value.
-   * 
+   *
    * @param key your key.
    * @param value your value. */
   public void putPref(String key, boolean value) {
@@ -252,7 +256,7 @@ public class Biasgen implements BiasgenPreferences, Observer, BiasgenHardwareInt
    * If the stored Preference value
    * is different than the value being put it will be put and listeners will be called.
    * Listeners will not be called if the value has previously been stored and is the same as the value being put.
-   * 
+   *
    * @param key your key.
    * @param value your value. */
   public void putPref(String key, int value) {
@@ -261,7 +265,7 @@ public class Biasgen implements BiasgenPreferences, Observer, BiasgenHardwareInt
 
   /** Use this method to put a value to the preferences only if the value is different than the stored Preference value. Using this method will thus not call
    * preference change listeners unless the value has changed.
-   * 
+   *
    * @param key your key.
    * @param value your value. */
   public void putPref(String key, float value) {
@@ -270,7 +274,7 @@ public class Biasgen implements BiasgenPreferences, Observer, BiasgenHardwareInt
 
   /** Use this method to put a value to the preferences only if the value is different than the stored Preference value. Using this method will thus not call
    * preference change listeners unless the value has changed.
-   * 
+   *
    * @param key your key.
    * @param value your value. */
   public void putPref(String key, double value) {
@@ -302,20 +306,22 @@ public class Biasgen implements BiasgenPreferences, Observer, BiasgenHardwareInt
   /** Handles observable (e.g. masterbias, IPots) call setChanged() and notifyObservers().
    * Sets the powerDown state.
    * If there is not a batch edit occurring, opens device if not open and calls sendConfiguration. */
+  @Override
   public void update(Observable observable, Object object) {
     // if(observable!=masterbias) {
     // log.warning("Biasgen.update(): unknown observable "+observable);
     // return;
     // }
-    if ((observable instanceof Masterbias) && object != null && object == Masterbias.EVENT_POWERDOWN) {
+    if ((observable instanceof Masterbias) && (object != null) && (object == Masterbias.EVENT_POWERDOWN)) {
       // log.info("Biasgen.update(): setting powerdown");
       try {
         if (!isBatchEditOccurring()) {
           if (!isOpen()) {
             open();
           }
-          if (hardwareInterface != null)
+          if (hardwareInterface != null) {
             hardwareInterface.setPowerDown(masterbias.isPowerDownEnabled());
+          }
         }
       } catch (HardwareInterfaceException e) {
         log.warning("error setting powerDown: " + e);
@@ -326,8 +332,9 @@ public class Biasgen implements BiasgenPreferences, Observer, BiasgenHardwareInt
           if (!isOpen()) {
             open();
           }
-          if (hardwareInterface != null)
+          if (hardwareInterface != null) {
             hardwareInterface.sendConfiguration(this);
+          }
         }
       } catch (HardwareInterfaceException e) {
         log.warning("error sending pot values: " + e);
@@ -369,7 +376,7 @@ public class Biasgen implements BiasgenPreferences, Observer, BiasgenHardwareInt
   }
 
   /** Returns number of pots in the IPotArray.
-   * 
+   *
    * @return number of Pot instances
    * @see #getPotArray() */
   public int getNumPots() {
@@ -377,6 +384,7 @@ public class Biasgen implements BiasgenPreferences, Observer, BiasgenHardwareInt
   }
 
   /** Closes the HardwareInterface */
+  @Override
   public void close() {
     if (hardwareInterface != null) {
       hardwareInterface.close();
@@ -388,6 +396,7 @@ public class Biasgen implements BiasgenPreferences, Observer, BiasgenHardwareInt
    * This parameter is necessary because the same method is used in the hardware interface,
    * which doesn't know about the particular bias generator instance.
    * @throws HardwareInterfaceException if there is a hardware error. If there is no interface, prints a message and just returns. **/
+  @Override
   public void flashConfiguration(Biasgen biasgen) throws HardwareInterfaceException {
     if (!isOpen()) {
       open();
@@ -398,6 +407,7 @@ public class Biasgen implements BiasgenPreferences, Observer, BiasgenHardwareInt
   }
 
   /** oOpens the first available hardware interface found */
+  @Override
   public void open() throws HardwareInterfaceException {
     // tobi removed automatic open of any available interface for biasgen since the addition of the UDPInteface hardware interface,
     // which would open this interface and throw an exception.
@@ -424,12 +434,15 @@ public class Biasgen implements BiasgenPreferences, Observer, BiasgenHardwareInt
    * @throws HardwareInterfaceException if there is a hardware error. If there is a null HardwareInterface, just returns.
    * @see #startBatchEdit
    * @see #endBatchEdit **/
+  @Override
   public void sendConfiguration(Biasgen biasgen) throws HardwareInterfaceException {
     if (hardwareInterface == null) {
       // log.warning("Biasgen.sendIPotValues(): no hardware interface");
       return;
     }
-    if (!isBatchEditOccurring() && hardwareInterface != null && hardwareInterface.isOpen()) {
+    if (!isBatchEditOccurring() && (hardwareInterface != null) && hardwareInterface.isOpen()) {
+      System.out.println("[DHV] hardwareInterface.sendConfiguration");
+      System.out.println("[DHV] hardwareInterface="+hardwareInterface.getClass().getCanonicalName());
       hardwareInterface.sendConfiguration(biasgen);
     }
   }
@@ -445,7 +458,7 @@ public class Biasgen implements BiasgenPreferences, Observer, BiasgenHardwareInt
   @Override
   public byte[] formatConfigurationBytes(Biasgen biasgen) {
     // we need to cast from PotArray to IPotArray, because we need the shift register stuff
-    PotArray potArray = (PotArray) biasgen.getPotArray();
+    PotArray potArray = biasgen.getPotArray();
     // we make an array of bytes to hold the values sent, then we fill the array, copy it to a
     // new array of the proper size, and pass it to the routine that actually sends a vendor request
     // with a data buffer that is the bytes
@@ -469,6 +482,7 @@ public class Biasgen implements BiasgenPreferences, Observer, BiasgenHardwareInt
     return null;
   }
 
+  @Override
   public void setPowerDown(boolean powerDown) throws HardwareInterfaceException {
     if (hardwareInterface == null) {
       log.warning("Biasgen.setPowerDown(): no hardware interface");
@@ -477,6 +491,7 @@ public class Biasgen implements BiasgenPreferences, Observer, BiasgenHardwareInt
     hardwareInterface.setPowerDown(powerDown);
   }
 
+  @Override
   public String getTypeName() {
     if (hardwareInterface == null) {
       log.warning("Biasgen.getTypeName(): no hardware interface, returning empty string");
@@ -485,6 +500,7 @@ public class Biasgen implements BiasgenPreferences, Observer, BiasgenHardwareInt
     return hardwareInterface.getTypeName();
   }
 
+  @Override
   public boolean isOpen() {
     if (hardwareInterface == null) {
       // log.info("Biasgen.isOpen(): no hardware interface, returning false");
@@ -536,8 +552,10 @@ public class Biasgen implements BiasgenPreferences, Observer, BiasgenHardwareInt
   public void setBatchEditOccurring(boolean batchEditOccurring) {
     this.batchEditOccurring = this.batchEditOccurring + (batchEditOccurring ? 1 : -1);
     if (this.batchEditOccurring < 0)
+     {
       this.batchEditOccurring = 0;
     // log.info("batchEditOccurring="+batchEditOccurring);
+    }
   }
 
   /** @return the list of IPotGroup lists for this Biasgen */
@@ -562,7 +580,7 @@ public class Biasgen implements BiasgenPreferences, Observer, BiasgenHardwareInt
   }
 
   /** Checks for unitialized biases (no non-zero preference values).
-   * 
+   *
    * @return true if any Pot value is non-zero. */
   public boolean isInitialized() {
     ArrayList<Pot> pots = getPotArray().getPots();
@@ -588,6 +606,7 @@ public class Biasgen implements BiasgenPreferences, Observer, BiasgenHardwareInt
     showedUnitializedBiasesWarning = true;
     try {
       SwingUtilities.invokeAndWait(new Runnable() {
+        @Override
         public void run() {
           final String WARNING_MESSAGE = "<html>No bias values or other hardware configuration have been set for " + getChip().getName()
               + ".<p> To remove this warning and to run your hardware you probably need to load confiruration (e.g. biases) for your hardware.<p>To load existing bias values, open Biases panel and load values using the File/Load settings menu item. <p>Settings are available in the folder <i>biasgenSettings</i><p>For the DVS128 sensor, using one of the <i>DVS128*.xml</i> files.<p>Or, to remove this message, set any bias to a non-zero value.</html>";
@@ -603,11 +622,11 @@ public class Biasgen implements BiasgenPreferences, Observer, BiasgenHardwareInt
 
   /** Converts from string of bits ('0', '1') to a byte array that is padded with leading zero bits so that when
    * bytes are sent and shifted one by one from the the final bit that is sent is the rightmost character of the string of bits.
-   * 
+   *
    * @param bitString the string of bits, e.g. '10010'. The bits are ordered from left to right in
    * the order they will be sent after the padding
    * that is prepended. White apace is ignored in the string.
-   * 
+   *
    * @returns byte array of binary representation of bits, e.g.
    * 00010010 for the input '10010'.
    * Leftmost 3 bits are padding that
@@ -619,9 +638,9 @@ public class Biasgen implements BiasgenPreferences, Observer, BiasgenHardwareInt
     bitString = bitString.replaceAll("\\s", "");
     int nbits = bitString.length();
     // compute needed number of bytes
-    int nbytes = (nbits % 8 == 0) ? (nbits / 8) : (nbits / 8 + 1); // 4->1, 8->1, 9->2
+    int nbytes = ((nbits % 8) == 0) ? (nbits / 8) : ((nbits / 8) + 1); // 4->1, 8->1, 9->2
     // for simplicity of following, left pad with 0's right away to get integral byte string
-    int npad = nbytes * 8 - nbits;
+    int npad = (nbytes * 8) - nbits;
     String pad = new String(new char[npad]).replace("\u0000", "0"); // http://stackoverflow.com/questions/1235179/simple-way-to-repeat-a-string-in-java
     bitString = pad + bitString;
     byte[] byteArray = new byte[nbytes];

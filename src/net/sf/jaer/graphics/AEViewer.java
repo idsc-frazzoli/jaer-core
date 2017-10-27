@@ -1716,7 +1716,7 @@ public class AEViewer extends javax.swing.JFrame implements PropertyChangeListen
       /* TODO synchronized tobi removed sync because it was causing deadlocks on exit. */
       DavisLcmServer davisLcmServer = new DavisLcmServer( //
           DavisSerial.FX2_02460045.name(), // TODO obtain from chip
-          DavisSerial.FX2_02460045.name(), //
+          "overview", //
           DavisApsType.RST, //
           DavisApsType.SIG); //
       // BasicEvent lastEvent=new BasicEvent();
@@ -4448,6 +4448,7 @@ public class AEViewer extends javax.swing.JFrame implements PropertyChangeListen
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
+        System.out.println("[DHV] biasgen menuitem runnable");
         if (chip.getBiasgen() == null) { // this chip has no biasgen object defined or registered with
           // setBiasgen
           if (getBiasgenFrame() != null) {
@@ -4465,6 +4466,7 @@ public class AEViewer extends javax.swing.JFrame implements PropertyChangeListen
             if (getBiasgenFrame() != null) {
               getBiasgenFrame().dispose();
             }
+            System.out.println("[DHV] new BiasgenFrame");
             biasgenFrame = new BiasgenFrame(chip);
             biasgenFrame.addWindowListener(new WindowAdapter() {
               @Override

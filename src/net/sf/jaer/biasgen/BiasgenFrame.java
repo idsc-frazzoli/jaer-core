@@ -218,8 +218,10 @@ public class BiasgenFrame extends javax.swing.JFrame implements UndoableEditList
     // this in biasgen because we would get a storm of compleints on loading preferences, etc
     try {
       if (!biasgen.isOpen()) {
+        System.out.println("[DHV] biasgen.open");
         biasgen.open();
       }
+      System.out.println("[DHV] sendConfiguration(biasgen)");
       biasgen.sendConfiguration(biasgen);
     } catch (HardwareInterfaceException e) {
       log.warning("BiasgenFrame.resend(): " + e.getMessage());
@@ -227,7 +229,7 @@ public class BiasgenFrame extends javax.swing.JFrame implements UndoableEditList
   }
 
   void importPreferencesFromFile(File f) throws Exception {
-    log.info("Current chip object is class " + chip == null ? null : chip.getClass() + "; importing biasgen settings from File " + f);
+    log.info(("Current chip object is class " + chip) == null ? null : chip.getClass() + "; importing biasgen settings from File " + f);
     InputStream is = new BufferedInputStream(new FileInputStream(f));
     biasgen.importPreferences(is);
     setCurrentFile(f);
@@ -415,6 +417,7 @@ public class BiasgenFrame extends javax.swing.JFrame implements UndoableEditList
     resendButton.addActionListener(new java.awt.event.ActionListener() {
       @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
+        System.out.println("[DHV] resendButtonActionPerformed");
         resendButtonActionPerformed(evt);
       }
     });
