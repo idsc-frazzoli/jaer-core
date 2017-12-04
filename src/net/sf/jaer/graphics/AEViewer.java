@@ -83,6 +83,7 @@ import javax.swing.ToolTipManager;
 
 import ch.ethz.idsc.retina.demo.DavisSerial;
 import ch.ethz.idsc.retina.dev.davis.DavisApsType;
+import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
 import ch.ethz.idsc.retina.lcm.davis.DavisLcmServer;
 import ch.unizh.ini.jaer.chip.cochlea.CochleaAMS1c;
 import ch.unizh.ini.jaer.chip.retina.DVS128;
@@ -1716,7 +1717,7 @@ public class AEViewer extends javax.swing.JFrame implements PropertyChangeListen
       /* TODO synchronized tobi removed sync because it was causing deadlocks on exit. */
       DavisLcmServer davisLcmServer = new DavisLcmServer( //
           DavisSerial.FX2_02460045.name(), // TODO obtain from chip
-          "overview", //
+          GokartLcmChannel.DAVIS_OVERVIEW, //
           DavisApsType.RST, //
           DavisApsType.SIG); //
       // BasicEvent lastEvent=new BasicEvent();
