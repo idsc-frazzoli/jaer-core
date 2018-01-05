@@ -1,32 +1,19 @@
-# jAER
-Java tools for Address-Event Representation (AER) neuromorphic processing.
+# Adaptation of jAER at IDSC-Frazzoli
 
-[![Build Status](https://travis-ci.org/SensorsINI/jaer.svg?branch=master)](https://travis-ci.org/SensorsINI/jaer)
+The repository contains an adaptation of the [original jAER](https://github.com/SensorsINI/jaer) repository which is licensed under the GNU Lesser General Public License v2.1.
 
-Welcome to the jAER Open Source Project
-Real time sensory-motor processing for event-based sensors and systems
-Founded in 2007.
-This project has been moved here from SourceForge. Commits are now disabled there.
+## Our motivation
 
-## Download
+The original jAER repository contains a lot of application code and routines for post-processing of the camera data.
+In our adaptation, we have removed most of this non-generic functionality.
+The result is closer to a library.
 
-You can find the latest releases at <https://github.com/SensorsINI/jaer/releases>.
+The transition is not yet completed.
+We plan to remove even more code to make the runtime as light-weight as possible.
 
-To build yourself, close the repo and run
+## License requirements
 
-    ant jar
-
-## Support
-
-See https://sourceforge.net/p/jaer/wiki/Home/ for user guide (ignoring the sourceforge subversion installation instructions there)
-
-The soureforge jaer has a useful past help forum at https://sourceforge.net/p/jaer/discussion/631958/
-
-There is also a (slightly less useful) sourceforge jaer developer forum at https://sourceforge.net/p/jaer/discussion/631959/
-
-New forum posts should use the github jaer issues page https://github.com/SensorsINI/jaer/issues
-
-![DVS128 cameras](/images/dvs128cameras.jpg)
-
-![Hotel bar scene with DAVIS140C](/images/HotelBarDavis.png)
-
+* The License and copyright notice is preserved
+* The source is disclosed
+* The changes are visible in the git history
+* The license (library) is unmodified
