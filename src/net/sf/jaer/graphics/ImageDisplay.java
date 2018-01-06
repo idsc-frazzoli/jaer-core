@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
@@ -177,7 +178,7 @@ public class ImageDisplay extends GLJPanel implements GLEventListener {
   boolean reshapePending = false;
   private HashMap<Integer, String> xticks, yticks;
   private float[] textColor = new float[] { 1, 1, 1 };
-  private ArrayList<Legend> legends = new ArrayList();
+  private List<Legend> legends = new ArrayList<>();
 
   /** Creates a new ImageDisplay, given some Open GL capabilities.
    *
@@ -269,8 +270,9 @@ public class ImageDisplay extends GLJPanel implements GLEventListener {
     // color set to white, raster to LL corner
     gl.glRasterPos3f(0, 0, 0);
     gl.glColor3f(1, 1, 1);
-    if (textRenderer == null)
+    if (textRenderer == null) {
       textRenderer = new TextRenderer(new Font("SansSerif", Font.PLAIN, getFontSize()), true, true);
+    }
     checkGLError(gl, "ImageDisplay, after init");
   }
 
@@ -484,7 +486,7 @@ public class ImageDisplay extends GLJPanel implements GLEventListener {
     for (int i = 0; i < src.length; i++) {
       float s = src[i];
       for (int j = 0; j < 3; j++) {
-        dest[3 * i + j] = s;
+        dest[(3 * i) + j] = s;
       }
     }
     pixmap.rewind();
@@ -680,7 +682,7 @@ public class ImageDisplay extends GLJPanel implements GLEventListener {
   }
 
   /** Sets the border outside the image frame in pixels (this space is in screen pixels)
-   * 
+   *
    * @param border */
   public void setBorderSpacePixels(int border) {
     borderPixels = border;

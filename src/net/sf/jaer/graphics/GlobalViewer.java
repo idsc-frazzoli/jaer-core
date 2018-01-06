@@ -143,8 +143,8 @@ public class GlobalViewer extends javax.swing.JFrame {
     this.jaerView = v;
   }
 
-  public ArrayList<DisplayWriter> getAllDisplays() {
-    ArrayList<DisplayWriter> displist = new ArrayList(inputDisplays);
+  public List<DisplayWriter> getAllDisplays() {
+    List<DisplayWriter> displist = new ArrayList<>(inputDisplays);
     displist.addAll(internalDisplays);
     return displist;
   }

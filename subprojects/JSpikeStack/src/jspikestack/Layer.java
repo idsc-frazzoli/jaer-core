@@ -7,6 +7,7 @@ package jspikestack;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 
 /** @author oconnorp */
 public class Layer<AxonType extends Axon> implements Serializable {
@@ -14,7 +15,7 @@ public class Layer<AxonType extends Axon> implements Serializable {
   public int dimx; // For display, purposes.
   public int dimy; // dimx,dimy must multiply to units.length
   // public ArrayList<AxonType> inAxons=new ArrayList();
-  public ArrayList<AxonType> outAxons = new ArrayList();
+  public List<AxonType> outAxons = new ArrayList<>();
   public Unit[] units;
   public String name;
   public boolean fireInputsTo = false;
@@ -34,8 +35,9 @@ public class Layer<AxonType extends Axon> implements Serializable {
   public void initializeUnits(int nUnits) { // AHAHAH I tricked you Java!
     units = (Unit[]) Array.newInstance(Unit.class, nUnits);
     setDefaultDims();
-    for (int i = 0; i < nUnits; i++)
+    for (int i = 0; i < nUnits; i++) {
       units[i] = makeNewUnit(i);
+    }
   }
 
   /** Initialize the array of units */
@@ -72,15 +74,17 @@ public class Layer<AxonType extends Axon> implements Serializable {
   public void propagateFrom(Spike sp) {
     // sp.layer=ixLayer;
     net.addToOutputQueue(sp);
-    for (Axon ax : outAxons)
+    for (Axon ax : outAxons) {
       ax.spikeIn(sp);
-    // for (AxonBundle ax:inAxons)
-    // ax.sendBackwards(sp, unitIndex);
+      // for (AxonBundle ax:inAxons)
+      // ax.sendBackwards(sp, unitIndex);
+    }
   }
 
   public void updateActions() {
-    for (Axon ax : outAxons)
+    for (Axon ax : outAxons) {
       ax.updateActions();
+    }
   }
 
   /** Return unit at index */
@@ -122,8 +126,9 @@ public class Layer<AxonType extends Axon> implements Serializable {
 
   public void fireTo(PSP sp, int[] addresses, float[] inputCurrents) {
     for (int i = 0; i < addresses.length; i++) {
-      if (addresses[i] == -1)
+      if (addresses[i] == -1) {
         continue;
+      }
       fireTo(sp, addresses[i], inputCurrents[i]);
       // if (status!=0)
       // {
@@ -153,10 +158,11 @@ public class Layer<AxonType extends Axon> implements Serializable {
    * coordinates fall out of range, return -1. Here we use the same
    * convention as Matlab, first counting down y (columns), then x (rows) */
   public int loc2index(int x, int y) {
-    if (x >= dimx || y >= dimy || x < 0 || y < 0)
+    if ((x >= dimx) || (y >= dimy) || (x < 0) || (y < 0)) {
       return -1;
-    else
-      return y + dimy * x;
+    } else {
+      return y + (dimy * x);
+    }
   }
 
   /** Reset Layer */
@@ -176,13 +182,15 @@ public class Layer<AxonType extends Axon> implements Serializable {
     dimy = -1;
     // Try finding a factor that divides evenly into the number of units
     // up to a certain ratio.
-    for (short i = start; i < nunits - nunits / 6; i++)
-      if (nunits % i == 0) {
+    for (short i = start; i < (nunits - (nunits / 6)); i++) {
+      if ((nunits % i) == 0) {
         dimy = i;
         break;
       }
-    if (dimy == -1)
+    }
+    if (dimy == -1) {
       dimy = start;
+    }
     dimx = (short) Math.ceil(nUnits() / (float) dimy);
   }
   // public void enableForwardsInputs(boolean st)
@@ -204,9 +212,11 @@ public class Layer<AxonType extends Axon> implements Serializable {
   }
 
   public AxonType axByLayer(int destLayerIndex) {
-    for (AxonType ax : outAxons)
-      if (ax.postLayer.ixLayer == destLayerIndex)
+    for (AxonType ax : outAxons) {
+      if (ax.postLayer.ixLayer == destLayerIndex) {
         return ax;
+      }
+    }
     return null;
     // throw new RuntimeException("No Axon connects layer "+ixLayer+" with layer "+destLayerIndex);
   }
@@ -218,8 +228,9 @@ public class Layer<AxonType extends Axon> implements Serializable {
   public int nForwardAxons() {
     int count = 0;
     for (Axon ax : outAxons) {
-      if (ax.isForwardAxon())
+      if (ax.isForwardAxon()) {
         count++;
+      }
     }
     return count;
   }
@@ -238,10 +249,11 @@ public class Layer<AxonType extends Axon> implements Serializable {
   }
 
   void check() {
-    if (units == null || (units.length > 0 && units[0] == null))
+    if ((units == null) || ((units.length > 0) && (units[0] == null))) {
       throw new RuntimeException(getName() + ": Units array is not initialized!  See function \"initializeUnits\".");
-    // if (units.length>0 && units[0]==null)
-    // throw new RuntimeException("Units array is not initialized! See function \"initializeUnits\".");
+      // if (units.length>0 && units[0]==null)
+      // throw new RuntimeException("Units array is not initialized! See function \"initializeUnits\".");
+    }
   }
 
   public class Controller extends Controllable {

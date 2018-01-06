@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.logging.Level;
@@ -22,7 +23,7 @@ import net.sf.jaer.event.OutputEventIterator;
  * input packets, for example from two different sensors.
  * @author Peter */
 public abstract class MultiSourceProcessor extends EventFilter2D {
-  ArrayList<Queue<BasicEvent>> buffers = new ArrayList(); // Stores events to ensure monotonicity between calls.
+  List<Queue<BasicEvent>> buffers = new ArrayList<>(); // Stores events to ensure monotonicity between calls.
   PriorityQueue<BasicEvent> pq;
   private int maxWaitTime = 100000; // Maximum time to wait (in microseconds) for events from one source before continuing
   boolean[] queueAlive;
@@ -39,11 +40,13 @@ public abstract class MultiSourceProcessor extends EventFilter2D {
   {
     super(chip);
     int nInputs = getInputNames().length;
-    if (nInputs == 0)
+    if (nInputs == 0) {
       nInputs = 1;
+    }
     pq = new PriorityQueue(nInputs, new EventComp());
-    for (int i = 0; i < nInputs; i++)
+    for (int i = 0; i < nInputs; i++) {
       buffers.add(new LinkedList());
+    }
     queueAlive = new boolean[buffers.size()];
     bufferStarts = new int[buffers.size()];
     bufferPrevTimes = new int[buffers.size()];
@@ -54,7 +57,7 @@ public abstract class MultiSourceProcessor extends EventFilter2D {
   // abstract public void filterPacket(ArrayList<EventPacket> packets,int[] order);
 
   // abstract public String[] getInputLabels();
-  public EventPacket filterPackets(ArrayList<EventPacket> packets) {
+  public EventPacket filterPackets(List<EventPacket> packets) {
     return filterPacket(mergePackets(packets));
   }
   // public void addDisplayWriter(DisplayWriter disp)
@@ -89,35 +92,38 @@ public abstract class MultiSourceProcessor extends EventFilter2D {
 
   /** Take in a set of EventPackets and merge them into a single packet,
    * writing their index in the input list into the source bits of the events.
-   * 
+   *
    * This method ensures that output events will be written in order, so long
    * as sources are synchronized to within a call-cycle. It uses
    * internal queues to take care of the following case:
-   * 
+   *
    * Call 1:
    * Source 1 produces a packet ending at t=1;
    * Source 2 produces a packet ending at t=3;
-   * 
+   *
    * Call 2:
    * Source 1 produces a packet starting at t=2;
-   * 
-   * 
+   *
+   *
    * @return */
-  EventPacket mergePackets(ArrayList<EventPacket> packets) {
-    if (packets.size() == 1)
+  EventPacket mergePackets(List<EventPacket> packets) {
+    if (packets.size() == 1) {
       return packets.get(0);
+    }
     int goToTime = Integer.MIN_VALUE;
     try {
       // Step 1: dump all events into queues
       for (int i = 0; i < packets.size(); i++) {
         BasicEvent ev = null;
         // Skip uninitialized sources
-        if (packets.get(i) == null)
+        if (packets.get(i) == null) {
           continue;
+        }
         for (int k = 0; k < packets.get(i).getSize(); k++) {
           ev = packets.get(i).getEvent(k);
-          if (bufferStarts[i] == Integer.MIN_VALUE)
+          if (bufferStarts[i] == Integer.MIN_VALUE) {
             bufferStarts[i] = ev.timestamp;
+          }
           ev.timestamp -= bufferStarts[i];
           /* // Find true start time, so that times run from zero to +inf
            * if(bufferStarts[i] == Integer.MIN_VALUE)
@@ -125,7 +131,7 @@ public abstract class MultiSourceProcessor extends EventFilter2D {
            * int preadjust = ev.timestamp;
            * // Subtract off start time and add loop offset time
            * ev.timestamp = ev.timestamp - bufferStarts[i] + bufferLoopOffsets[i];
-           * 
+           *
            * // If we've looped in time, continue adding time
            * if(bufferPrevTimes[i] > ev.timestamp){
            * // If we somehow looped back before a time we've seen,
@@ -141,16 +147,17 @@ public abstract class MultiSourceProcessor extends EventFilter2D {
            * ev.timestamp += bufferLoopOffsets[i];
            * }
            * }
-           * 
-           * 
+           *
+           *
            * if (ev.timestamp < 0)
            * throw new RuntimeException("Event found below initial timestamp. Time:" +
            * ev.timestamp);
-           * 
+           *
            * // Store this time for next iteration
            * bufferPrevTimes[i]=ev.timestamp; */
-          if (ev.timestamp < 0)
+          if (ev.timestamp < 0) {
             throw new RuntimeException("Event found below initial timestamp. Time:" + ev.timestamp);
+          }
           bufferPrevTimes[i] = ev.timestamp;
           BasicEvent evo = ev.getClass().newInstance(); // This seems WRONG! Alternative would be adding a copy method to all events
           evo.copyFrom(ev);
@@ -160,8 +167,9 @@ public abstract class MultiSourceProcessor extends EventFilter2D {
           // System.out.println("NonMonotonicTimeStamp!");
           buffers.get(i).add(evo);
         }
-        if (ev != null)
+        if (ev != null) {
           goToTime = Math.max(goToTime, ev.timestamp);
+        }
       }
     } catch (InstantiationException ex) {
       Logger.getLogger(MultiSourceProcessor.class.getName()).log(Level.SEVERE, null, ex);
@@ -192,14 +200,16 @@ public abstract class MultiSourceProcessor extends EventFilter2D {
      * event with an event originating from the same buffer as the pulled
      * event, ensuring that pq always contains 1 element from each source.
      * Run until one of the source buffers is empty. */
-    if (out == null)// Why does this happen?
+    if (out == null) {
       out = new EventPacket();
+    }
     out.clear();
     OutputEventIterator<BasicEvent> outItr = out.outputIterator();
     BasicEvent ev = null;
     while (!pq.isEmpty()) {
-      if (pq.peek().timestamp > goToTime)
+      if (pq.peek().timestamp > goToTime) {
         break;
+      }
       // Pull next output event from head of Priority Queue, write to output
       ev = pq.poll();
       outItr.writeToNextOutput(ev);
@@ -215,8 +225,9 @@ public abstract class MultiSourceProcessor extends EventFilter2D {
         pq.add(pulledFromBuffer);
       }
     }
-    if (ev != null)
+    if (ev != null) {
       lastEventTime = ev.timestamp;
+    }
     return out;
   }
 

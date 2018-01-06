@@ -442,7 +442,7 @@ public class Biasgen implements BiasgenPreferences, Observer, BiasgenHardwareInt
     }
     if (!isBatchEditOccurring() && (hardwareInterface != null) && hardwareInterface.isOpen()) {
       System.out.println("[DHV] hardwareInterface.sendConfiguration");
-      System.out.println("[DHV] hardwareInterface="+hardwareInterface.getClass().getCanonicalName());
+      System.out.println("[DHV] hardwareInterface=" + hardwareInterface.getClass().getCanonicalName());
       hardwareInterface.sendConfiguration(biasgen);
     }
   }
@@ -551,10 +551,9 @@ public class Biasgen implements BiasgenPreferences, Observer, BiasgenHardwareInt
    * @see #endBatchEdit */
   public void setBatchEditOccurring(boolean batchEditOccurring) {
     this.batchEditOccurring = this.batchEditOccurring + (batchEditOccurring ? 1 : -1);
-    if (this.batchEditOccurring < 0)
-     {
+    if (this.batchEditOccurring < 0) {
       this.batchEditOccurring = 0;
-    // log.info("batchEditOccurring="+batchEditOccurring);
+      // log.info("batchEditOccurring="+batchEditOccurring);
     }
   }
 

@@ -6,6 +6,7 @@ package jspikestack;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFileChooser;
 import javax.xml.parsers.DocumentBuilder;
@@ -42,11 +43,11 @@ public class StatCollector {
     nc.readXML();
     // nc.setForwardStrengths(new boolean[] {false,true,false,true});
     // nc.setBackwardStrengths(new boolean[] {true,true,false,true});
-    ArrayList<Stat> stats = new ArrayList();
+    List<Stat> stats = new ArrayList<>();
     nc.setRecordingState(true);
     nc.startDisplay();
-    for (float thresh = 1; thresh < 5; thresh += .3)
-      for (int tau = 10000; tau < 300000; tau *= 1.3)
+    for (float thresh = 1; thresh < 5; thresh += .3) {
+      for (int tau = 10000; tau < 300000; tau *= 1.3) {
         for (int tref = 1000; tref < 100000; tref *= 1.5) {
           Stat s = new Stat();
           s.thresh = thresh;
@@ -62,9 +63,11 @@ public class StatCollector {
           nc.sim.run();
           s.nSpikes = nc.recorder.spikes.size();
           s.endTime = net.time;
-          System.out.println(s.nSpikes + " Spikes.  Final time: " + s.endTime / 1000000f);
+          System.out.println(s.nSpikes + " Spikes.  Final time: " + (s.endTime / 1000000f));
           stats.add(s);
         }
+      }
+    }
     buildXMLFile(stats);
   }
   // public static ArrayList netRun(NetController nc,Stat st)
@@ -82,7 +85,7 @@ public class StatCollector {
     int endTime;
   }
 
-  public static void buildXMLFile(ArrayList<Stat> stats) {
+  public static void buildXMLFile(List<Stat> stats) {
     try {
       DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder docBuilder = docFactory.newDocumentBuilder();

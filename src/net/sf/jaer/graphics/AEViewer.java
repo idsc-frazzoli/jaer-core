@@ -56,6 +56,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BrokenBarrierException;
@@ -931,8 +932,8 @@ public class AEViewer extends javax.swing.JFrame implements PropertyChangeListen
     }
   }
 
-  private ArrayList<String> chipClassNames;
-  private ArrayList<Class> chipClasses;
+  private List<String> chipClassNames;
+  private List<Class> chipClasses;
 
   @SuppressWarnings("unchecked")
   void getChipClassPrefs() {

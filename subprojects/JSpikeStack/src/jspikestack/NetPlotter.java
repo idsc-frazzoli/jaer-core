@@ -19,6 +19,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,6 +28,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.text.JTextComponent;
 
@@ -50,7 +52,7 @@ public class NetPlotter {
   public boolean realTime = false; // Set true for real-time computation. In this case, the network will try to display up to the end of the output queue
   public boolean enable = true;
   int lastNetTime = 0;
-  public ArrayList<StatDisplay> stats = new ArrayList();
+  public List<StatDisplay> stats = new ArrayList<>();
   Thread viewLoop;
   // public boolean useneuronstates=true;
   // public boolean zeroCentred=false;
@@ -73,8 +75,9 @@ public class NetPlotter {
   public void raster(Collection<Spike> spikes, String title) {
     CombinedDomainXYPlot plot = new CombinedDomainXYPlot(new NumberAxis("Time"));
     // Build a plot for each layer
-    for (int i = 0; i < net.nLayers(); i++)
+    for (int i = 0; i < net.nLayers(); i++) {
       plot.add(layerRaster(spikes, net.lay(i)), 1);
+    }
     JFreeChart chart = new JFreeChart("Raster: " + title, JFreeChart.DEFAULT_TITLE_FONT, plot, true);
     // Put it in a frame!
     JFrame fr = new JFrame();
@@ -91,8 +94,9 @@ public class NetPlotter {
     XYSeries data = new XYSeries("Events");
     for (int i = 0; i < spikes.size(); i++) {
       Spike evt = itr.next();
-      if (evt.layer == lay.ixLayer)
+      if (evt.layer == lay.ixLayer) {
         data.add((float) evt.time / 1000, evt.addr);
+      }
     }
     XYDataset raster = new XYSeriesCollection(data);
     // SamplingXYLineAndShapeRenderer renderer = new SamplingXYLineAndShapeRenderer(false, true);
@@ -150,8 +154,9 @@ public class NetPlotter {
       } catch (InvocationTargetException ex) {
         Logger.getLogger(NetPlotter.class.getName()).log(Level.SEVERE, null, ex);
       }
-    } else
+    } else {
       createStatePlot(hostPanel);
+    }
     return hostPanel;
   }
 
@@ -178,7 +183,7 @@ public class NetPlotter {
       // Assign sizes to the layers
       int sizeX;
       int sizeY;
-      if (net.lay(i).dimx * net.lay(i).dimy < net.lay(i).nUnits()) {
+      if ((net.lay(i).dimx * net.lay(i).dimy) < net.lay(i).nUnits()) {
         sizeY = (int) Math.ceil(Math.sqrt(net.lay(i).nUnits()));
         sizeX = (int) Math.ceil(net.lay(i).nUnits() / (double) sizeY);
       } else {
@@ -260,7 +265,7 @@ public class NetPlotter {
     hostPanel.add(statePanel, BorderLayout.CENTER);
     // If controls have been added, create control panel.
     if (controlPanel != null) {
-      JScrollPane jsp = new JScrollPane(controlPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+      JScrollPane jsp = new JScrollPane(controlPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
       jsp.setPreferredSize(new Dimension(controlPanel.getPreferredSize().width, 800));
       hostPanel.add(jsp, BorderLayout.WEST);
     }
@@ -302,8 +307,9 @@ public class NetPlotter {
   public void followState(final Container pan) {
     frm = createStatePlot();
     pan.add(frm);
-    if (viewLoop != null && viewLoop.isAlive())
+    if ((viewLoop != null) && viewLoop.isAlive()) {
       throw new RuntimeException("You're trying to start the View Loop, but it's already running");
+    }
     class ViewLoop extends Thread {
       boolean wasshowing;
 
@@ -351,14 +357,16 @@ public class NetPlotter {
             // SwingUtilities.invokeLater(new Runnable()
             // { @Override
             // public void run(){
-            if (realTime)
+            if (realTime) {
               state();
-            else
+            } else {
               state(lastNetTime + (int) (updateMicros * timeScale));
-            for (StatDisplay st : stats)
+            }
+            for (StatDisplay st : stats) {
               st.display();
-            // }});
-            // System.out.println("PlotThread: "+lastNetTime/1000);
+              // }});
+              // System.out.println("PlotThread: "+lastNetTime/1000);
+            }
           }
           try {
             Thread.sleep(updateMicros / 1000);
@@ -380,7 +388,7 @@ public class NetPlotter {
   }
 
   public void kill() {
-    if (viewLoop != null && viewLoop.isAlive()) {
+    if ((viewLoop != null) && viewLoop.isAlive()) {
       synchronized (this) {
         viewLoop.interrupt();
         try {
@@ -410,10 +418,11 @@ public class NetPlotter {
     // kill();
     synchronized (this) {
       lastNetTime = 0;
-      if (layerStatePlots != null)
+      if (layerStatePlots != null) {
         for (LayerStatePlotter lsp : layerStatePlots) {
           lsp.reset();
         }
+      }
     }
   }
 
@@ -424,17 +433,20 @@ public class NetPlotter {
 
   /** Update the state plot to the specified time */
   public void state(int upToTime) {
-    if (net.time == Integer.MIN_VALUE)
+    if (net.time == Integer.MIN_VALUE) {
       return;
+    }
     // Can't progress further than present.
     upToTime = Math.min(upToTime, net.time);
-    if (layerStatePlots == null)
+    if (layerStatePlots == null) {
       createStatePlot();
-    for (int i = 0; i < layerStatePlots.size(); i++)
+    }
+    for (int i = 0; i < layerStatePlots.size(); i++) {
       layerStatePlots.get(i).update(upToTime);
+    }
     // layStatePlot(i).update(upToTime);
     // this.layerStatePlots[i].update(upToTime);
-    jt.setText("Time: " + (int) upToTime / 1000 + "ms\nNetTime: " + (int) net.time / 1000 + "ms");
+    jt.setText("Time: " + (upToTime / 1000) + "ms\nNetTime: " + (net.time / 1000) + "ms");
     lastNetTime = upToTime;
   }
 
@@ -467,8 +479,9 @@ public class NetPlotter {
         }
       });
       stateTrackers = new Unit.StateTracker[lay.nUnits()];
-      for (int i = 0; i < stateTrackers.length; i++)
+      for (int i = 0; i < stateTrackers.length; i++) {
         stateTrackers[i] = lay.units[i].getStateTracker();
+      }
     }
 
     public void update() {
@@ -489,14 +502,16 @@ public class NetPlotter {
       // return;
       // else if (lastTime==Integer.MIN_VALUE)
       // lastTime=toTime;
-      if (toTime == lastTime) // Nothing has changed. Return
+      if (toTime == lastTime) {
         return;
+      }
       // if (useneuronstates)
       // {
       // Step 1: Add new events to state
       while (!spikeQueue.isEmpty()) {
-        if (spikeQueue.peek().time > toTime)
+        if (spikeQueue.peek().time > toTime) {
           break;
+        }
         Spike ev = spikeQueue.poll();
         stateTrackers[ev.addr].updatestate(ev);
       }
@@ -564,8 +579,8 @@ public class NetPlotter {
         maxState = smax;
       } else {
         float invad = 1 - adaptationRate;
-        minState = smin * adaptationRate + invad * minState;
-        maxState = smax * adaptationRate + invad * maxState;
+        minState = (smin * adaptationRate) + (invad * minState);
+        maxState = (smax * adaptationRate) + (invad * maxState);
       }
       final int iimax = imax;
       final float ssmin = smin;
@@ -579,7 +594,7 @@ public class NetPlotter {
             disp.setPixmapGray(i, (state[i] - minState) / (maxState - minState));
             rate = Math.max(state[i], rate);
           }
-          rate = rate * 1000000 / tau;
+          rate = (rate * 1000000) / tau;
           lastTime = toTime;
           disp.setTitleLabel(layer.getName() + " " + stateTrackers[iimax].getLabel(ssmin, ssmax));
           // disp.drawCenteredString(1, 1, "A");
@@ -592,13 +607,15 @@ public class NetPlotter {
 
     public void reset() { // outBookmark=0;
       synchronized (this) {
-        for (Unit.StateTracker s : stateTrackers)
+        for (Unit.StateTracker s : stateTrackers) {
           s.reset();
+        }
         lastTime = 0;
         minState = Float.NaN;
         maxState = Float.NaN;
-        for (int i = 0; i < state.length; i++)
+        for (int i = 0; i < state.length; i++) {
           state[i] = 0;
+        }
       }
     }
   }

@@ -1,4 +1,4 @@
-/*                    
+/*
  * FilterPanel.java
  *
  * Created on October 31, 2005, 8:13 PM
@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -286,7 +287,7 @@ public class FilterPanel extends javax.swing.JPanel implements PropertyChangeLis
       // these methods, e.g. "void doDisableServo()" do an action.
       // also, a pair of methods doPressXXX and doReleaseXXX will add a button that calls the first method on press and the 2nd on release
       Insets butInsets = new Insets(0, 0, 0, 0);
-      ArrayList<JButton> doButList = new ArrayList();
+      ArrayList<JButton> doButList = new ArrayList<>();
       for (Method method : methods) {
         // add a button XXX that calls doPressXXX on press and doReleaseXXX on release of button
         if (method.getName().startsWith("doPress") && (method.getParameterTypes().length == 0) && (method.getReturnType() == void.class)) {
@@ -365,7 +366,7 @@ public class FilterPanel extends javax.swing.JPanel implements PropertyChangeLis
       Comparator<AbstractButton> butComp = new Comparator<AbstractButton>() {
         @Override
         public int compare(AbstractButton o1, AbstractButton o2) {
-          if (o1 == null || o2 == null || o1.getText() == null || o2.getText() == null) {
+          if ((o1 == null) || (o2 == null) || (o1.getText() == null) || (o2.getText() == null)) {
             return 0;
           }
           return o1.getText().compareToIgnoreCase(o2.getText());
@@ -454,7 +455,7 @@ public class FilterPanel extends javax.swing.JPanel implements PropertyChangeLis
       // these must be saved and then sorted in case there are property groups defined.
       if (getFilter().hasPropertyGroups()) {
         Set<String> groupSet = getFilter().getPropertyGroupSet();
-        ArrayList<String> setList = new ArrayList();
+        List<String> setList = new ArrayList<>();
         setList.addAll(groupSet);
         Collections.sort(setList);
         for (String s : setList) {
@@ -531,7 +532,7 @@ public class FilterPanel extends javax.swing.JPanel implements PropertyChangeLis
           } else if ((c != null) && c.isEnum() && (p.getReadMethod() != null) && (p.getWriteMethod() != null)) {
             control = new EnumControl(c, getFilter(), p.getName(), p.getWriteMethod(), p.getReadMethod());
             myadd(control, name, inherited);
-          } else if ((c != null) && (c == Point2D.Float.class || c == Point2D.Double.class || c == Point2D.class) && (p.getReadMethod() != null)
+          } else if ((c != null) && ((c == Point2D.Float.class) || (c == Point2D.Double.class) || (c == Point2D.class)) && (p.getReadMethod() != null)
               && (p.getWriteMethod() != null)) {
             control = new Point2DControl(getFilter(), p.getName(), p.getWriteMethod(), p.getReadMethod());
             myadd(control, name, inherited);
@@ -589,6 +590,7 @@ public class FilterPanel extends javax.swing.JPanel implements PropertyChangeLis
   }
 
   class MyControl extends JPanel {
+    @Override
     public Dimension getMaximumSize() {
       Dimension d = getPreferredSize();
       d.setSize(1000, d.getHeight());
@@ -830,7 +832,7 @@ public class FilterPanel extends javax.swing.JPanel implements PropertyChangeLis
       ic.addPropertyChangeListener(ic.PROPERTY_VALUE, new PropertyChangeListener() {
         @Override
         public void propertyChange(PropertyChangeEvent pce) {
-          if (pce.getNewValue() == null || !(pce.getNewValue() instanceof Integer)) {
+          if ((pce.getNewValue() == null) || !(pce.getNewValue() instanceof Integer)) {
             return;
           }
           sliderDontProcess = true;
@@ -1065,7 +1067,7 @@ public class FilterPanel extends javax.swing.JPanel implements PropertyChangeLis
               }
             }
           }
-          if (evt.getKeyCode() == evt.VK_TAB) {
+          if (evt.getKeyCode() == KeyEvent.VK_TAB) {
             try {
               NumberFormat format = NumberFormat.getNumberInstance();
               int y = format.parse(tf.getText()).intValue();
@@ -1438,6 +1440,7 @@ public class FilterPanel extends javax.swing.JPanel implements PropertyChangeLis
     enabledCheckBox.setToolTipText("Enable or disable the filter");
     enabledCheckBox.setMargin(new java.awt.Insets(1, 1, 1, 1));
     enabledCheckBox.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         enabledCheckBoxActionPerformed(evt);
       }
@@ -1448,6 +1451,7 @@ public class FilterPanel extends javax.swing.JPanel implements PropertyChangeLis
     resetButton.setToolTipText("Resets the filter");
     resetButton.setMargin(new java.awt.Insets(1, 5, 1, 5));
     resetButton.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         resetButtonActionPerformed(evt);
       }
@@ -1467,6 +1471,7 @@ public class FilterPanel extends javax.swing.JPanel implements PropertyChangeLis
     helpBut.setToolTipText("Shows help on jAER wiki");
     helpBut.setMargin(new java.awt.Insets(1, 5, 1, 5));
     helpBut.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         helpButActionPerformed(evt);
       }

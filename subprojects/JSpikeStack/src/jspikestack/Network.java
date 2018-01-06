@@ -16,10 +16,10 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /** A stack of event-driven layers of event-driven units.
- * 
+ *
  * All time-variables are considered to be in milliseconds
  * (This matters when doing real-time I/O).
- * 
+ *
  * @author oconnorp */
 public class Network<AxonType extends Axon> implements Serializable {
   // <editor-fold defaultstate="collapsed" desc=" Properties ">
@@ -27,8 +27,8 @@ public class Network<AxonType extends Axon> implements Serializable {
   Axon.AbstractFactory axonFactory;
   Unit.AbstractFactory unitFactory;
   Thread netThread;
-  ArrayList<Layer> layers = new ArrayList();
-  ArrayList<Axon> axons = new ArrayList();
+  List<Layer> layers = new ArrayList<>();
+  List<Axon> axons = new ArrayList<>();
   // transient Queue<PSP> inputBuffer = new LinkedList();
   // transient Queue<SpikeType> internalBuffer= new LinkedList();
   // transient Queue<SpikeType> internalBuffer= new PriorityBlockingQueue();
@@ -67,19 +67,20 @@ public class Network<AxonType extends Axon> implements Serializable {
     outputQueue = new MultiReaderQueue();
   }
 
-  public ArrayList<Layer> getLayers() {
+  public List<Layer> getLayers() {
     return layers;
   }
 
-  public ArrayList<Axon> getAxons() {
+  public List<Axon> getAxons() {
     return axons;
   }
 
   /** Add a layer to the network at the specified index */
   public Layer addLayer(int index, Layer lay) {
     // If index is higher than list-size, fill with null elements
-    for (int i = layers.size(); i <= index; i++)
+    for (int i = layers.size(); i <= index; i++) {
       layers.add(null);
+    }
     layers.set(index, lay);
     return layers.get(index);
   }
@@ -104,12 +105,15 @@ public class Network<AxonType extends Axon> implements Serializable {
 
   /** Remove the specified layer from the network, along with all associated axons */
   public void removeLayer(Layer layer) {
-    for (Axon ax : axons)
-      if (ax.preLayer == layer || ax.postLayer == layer)
+    for (Axon ax : axons) {
+      if ((ax.preLayer == layer) || (ax.postLayer == layer)) {
         removeAxon(ax);
+      }
+    }
     int ix = layers.indexOf(layer);
-    if (ix != -1)
+    if (ix != -1) {
       layers.set(ix, null);
+    }
   }
 
   /** Remove the specified axon from the network */
@@ -126,10 +130,12 @@ public class Network<AxonType extends Axon> implements Serializable {
 
   /** Add a new axon based on the indeces of the pre- and post- layers */
   public AxonType addAxon(int preLayer, int postLayer) {
-    if (layers.size() <= preLayer || layers.get(preLayer) == null)
+    if ((layers.size() <= preLayer) || (layers.get(preLayer) == null)) {
       throw new RuntimeException("Cannot add axon: Layer " + preLayer + " does not exist.");
-    if (layers.size() <= postLayer || layers.get(postLayer) == null)
+    }
+    if ((layers.size() <= postLayer) || (layers.get(postLayer) == null)) {
       throw new RuntimeException("Cannot add axon: Layer " + postLayer + " does not exist.");
+    }
     Axon ax = axonFactory.make(lay(preLayer), lay(postLayer));
     axons.add(ax);
     return (AxonType) ax;
@@ -153,15 +159,17 @@ public class Network<AxonType extends Axon> implements Serializable {
   }
 
   public void addAllReverseAxons() {
-    ArrayList<Axon> oldAxons = (ArrayList<Axon>) axons.clone();
-    for (Axon old : oldAxons)
+    List<Axon> oldAxons = new ArrayList<>(axons);
+    for (Axon old : oldAxons) {
       addReverseAxon(old);
+    }
   }
 
   public void rbmify(boolean unRoll) {
     addAllReverseAxons();
-    if (unRoll)
+    if (unRoll) {
       unrollRBMs();
+    }
   }
 
   /** Unroll this network so that just the top two layers are symmetrically
@@ -171,18 +179,19 @@ public class Network<AxonType extends Axon> implements Serializable {
     int nLay = nLayers();
     for (int i = 0; i < nLay; i++) {
       Layer upLayer = lay(i);
-      if (upLayer.nForwardAxons() > 0 && upLayer.ax(0).postLayer.nForwardAxons() > 0 && upLayer.ax(0).postLayer.ax(0).postLayer.nForwardAxons() == 0) // If
-                                                                                                                                                      // layer
-                                                                                                                                                      // is
-                                                                                                                                                      // below a
-                                                                                                                                                      // pair of
-                                                                                                                                                      // top-level
-                                                                                                                                                      // rbms,
-                                                                                                                                                      // start a
-                                                                                                                                                      // recursive
-                                                                                                                                                      // unzipping
-                                                                                                                                                      // chain
+      if ((upLayer.nForwardAxons() > 0) && (upLayer.ax(0).postLayer.nForwardAxons() > 0) && (upLayer.ax(0).postLayer.ax(0).postLayer.nForwardAxons() == 0)) {
+        // layer
+        // is
+        // below a
+        // pair of
+        // top-level
+        // rbms,
+        // start a
+        // recursive
+        // unzipping
+        // chain
         copyAndAdopt(upLayer);
+      }
     }
   }
 
@@ -235,10 +244,10 @@ public class Network<AxonType extends Axon> implements Serializable {
     // Initial pass, instantiating layers and unit arrays
     for (int i = 0; i < ini.layers.size(); i++) {
       addLayer(i);
-      if (ini.lay(i).nUnits > 0 && ini.lay(i).dimx > 0 && ini.lay(i).dimx * ini.lay(i).dimy != ini.lay(i).nUnits)
+      if ((ini.lay(i).nUnits > 0) && (ini.lay(i).dimx > 0) && ((ini.lay(i).dimx * ini.lay(i).dimy) != ini.lay(i).nUnits)) {
         throw new RuntimeException("You specified both dimensions and units for layer " + i + ", but the product of the dimensions ("
-            + ini.lay(i).dimx * ini.lay(i).dimy + " does not add up to the number of units " + ini.lay(i).nUnits);
-      else if (ini.lay(i).dimx > 0) {
+            + (ini.lay(i).dimx * ini.lay(i).dimy) + " does not add up to the number of units " + ini.lay(i).nUnits);
+      } else if (ini.lay(i).dimx > 0) {
         ini.lay(i).nUnits = ini.lay(i).dimx * ini.lay(i).dimy;
         lay(i).dimx = (short) ini.lay(i).dimx;
         lay(i).dimy = (short) ini.lay(i).dimy;
@@ -252,8 +261,9 @@ public class Network<AxonType extends Axon> implements Serializable {
       // Assign random initial weights based on Gaussian distributions with specified parameters
       if (!Float.isNaN(ax.wMean)) {
         for (int u = 0; u < axon.w.length; u++) { // ax.w[u]=new float[ax.postLayer.nUnits()];
-          for (int w = 0; w < axon.w[u].length; w++)
-            axon.w[u][w] = (float) (ax.wMean + ax.wStd * rnd.nextGaussian());
+          for (int w = 0; w < axon.w[u].length; w++) {
+            axon.w[u][w] = (float) (ax.wMean + (ax.wStd * rnd.nextGaussian()));
+          }
         }
       }
     }
@@ -261,24 +271,28 @@ public class Network<AxonType extends Axon> implements Serializable {
 
   /** Initializer Object - Use this to enter properties with which to instantiate EvtStack */
   public static class Initializer { // Class for initializing an evtstack
-    ArrayList<Initializer.LayerInitializer> layers = new ArrayList();
-    ArrayList<Initializer.AxonInitializer> axons = new ArrayList();
+    List<Initializer.LayerInitializer> layers = new ArrayList<>();
+    List<Initializer.AxonInitializer> axons = new ArrayList<>();
 
     public Initializer.LayerInitializer lay(int n) {
       // if (layers.size()<n)
-      for (int i = layers.size(); i <= n; i++)
+      for (int i = layers.size(); i <= n; i++) {
         layers.add(new Initializer.LayerInitializer());
+      }
       return layers.get(n);
     }
 
     public Initializer.AxonInitializer ax(int preLayer, int postLayer) {
-      if (preLayer >= layers.size() || postLayer >= layers.size())
+      if ((preLayer >= layers.size()) || (postLayer >= layers.size())) {
         throw new RuntimeException(
             "You're trying to wire an axon to layer " + Math.max(preLayer, postLayer) + ", which don't exist yet!  First define the layers.");
+      }
       // Seach for axon with described signatures
-      for (Initializer.AxonInitializer ax : axons)
-        if (ax.isConnectedTo(preLayer, postLayer))
+      for (Initializer.AxonInitializer ax : axons) {
+        if (ax.isConnectedTo(preLayer, postLayer)) {
           return ax;
+        }
+      }
       // If axon not found, make a new one..
       Initializer.AxonInitializer ax = new Initializer.AxonInitializer(preLayer, postLayer);
       axons.add(ax);
@@ -297,7 +311,7 @@ public class Network<AxonType extends Axon> implements Serializable {
       }
 
       public boolean isConnectedTo(int pre, int post) {
-        return (inLayer == pre && outLayer == post);
+        return ((inLayer == pre) && (outLayer == post));
       }
     }
 
@@ -330,8 +344,9 @@ public class Network<AxonType extends Axon> implements Serializable {
 
   /** Feed an array of events into the network */
   public void feedEvents(List<? extends PSP> inputEvents) {
-    for (PSP ev : inputEvents)
+    for (PSP ev : inputEvents) {
       addToQueue(ev);
+    }
   }
 
   /** Check if the network is ready to run. This will throw an exception if
@@ -339,10 +354,12 @@ public class Network<AxonType extends Axon> implements Serializable {
    * un-initialized units, etc. */
   public void check() {
     try {
-      for (Layer l : layers)
+      for (Layer l : layers) {
         l.check();
-      for (Axon a : axons)
+      }
+      for (Axon a : axons) {
         a.check();
+      }
     } catch (RuntimeException me) {
       JOptionPane.showMessageDialog(null, me.getMessage(), me.toString(), JOptionPane.ERROR_MESSAGE);
       throw me;
@@ -425,14 +442,16 @@ public class Network<AxonType extends Axon> implements Serializable {
 
   /** This method feeds events into the network. It waits for the input queue. */
   public Thread startEventFeast() {
-    if (isRunning())
+    if (isRunning()) {
       throw new RuntimeException("Can't start new network simulation: the old one has not been killed yet!");
+    }
     netThread = new Thread() {
       @Override
       public void run() {
         try {
-          if (nextInput == null)
+          if (nextInput == null) {
             nextInput = inputBuffer.take();
+          }
           // If in liveMode, go til inputBuffer is empty, otherwise go til both buffers are empty (or timeout).
           while (true) {
             boolean readInput = internalBuffer.isEmpty() || (nextInput.hitTime < internalBuffer.peek().hitTime);
@@ -448,11 +467,13 @@ public class Network<AxonType extends Axon> implements Serializable {
             psp.affect(Network.this);
             digest(); // Post Spike-Feed Actions
             spikecount++;
-            if (!enable)
+            if (!enable) {
               break;
+            }
             // Get next input, waiting if necessary
-            if (readInput)
+            if (readInput) {
               nextInput = inputBuffer.take();
+            }
           }
           enable = true; // Re-enable network when done.
         } catch (InterruptedException ex) {
@@ -470,13 +491,14 @@ public class Network<AxonType extends Axon> implements Serializable {
   }
 
   boolean isRunning() {
-    return netThread != null && netThread.isAlive();
+    return (netThread != null) && netThread.isAlive();
   }
 
   /** Kill the simulation thread, wait for it to stop */
   public void kill() {
-    if (!isRunning())
+    if (!isRunning()) {
       return;
+    }
     synchronized (this) // Wait for network thread to be killed
     {
       enable = false;
@@ -494,16 +516,17 @@ public class Network<AxonType extends Axon> implements Serializable {
     // If in liveMode, go til inputBuffer is empty, otherwise go til both buffers are empty (or timeout).
     while (!(inputBuffer.isEmpty() && (internalBuffer.isEmpty() || liveMode)) && enable) {
       // Determine whether to read from input or buffer
-      boolean readInput = !inputBuffer.isEmpty() && (internalBuffer.isEmpty() || inputBuffer.peek().hitTime < internalBuffer.peek().hitTime);
+      boolean readInput = !inputBuffer.isEmpty() && (internalBuffer.isEmpty() || (inputBuffer.peek().hitTime < internalBuffer.peek().hitTime));
       int newtime = readInput ? inputBuffer.peek().hitTime : internalBuffer.peek().hitTime;
       // Update current time to time of this event
-      if (newtime - time < 0) {
+      if ((newtime - time) < 0) {
         System.out.println("Input Spike time Decrease detected!  (" + time + "-->" + newtime + ")  Resetting network...");
         reset(newtime);
         break;
       }
-      if (newtime > timeout)
+      if (newtime > timeout) {
         break;
+      }
       time = newtime;
       PSP psp = readInput ? inputBuffer.poll() : internalBuffer.poll();
       psp.affect(this);
@@ -558,9 +581,10 @@ public class Network<AxonType extends Axon> implements Serializable {
     internalBuffer.clear();
     time = zeroTime;
     // time=0;
-    for (Layer l : layers)
+    for (Layer l : layers) {
       l.reset();
-    // plot.reset();
+      // plot.reset();
+    }
   }
 
   /** Reset Network */

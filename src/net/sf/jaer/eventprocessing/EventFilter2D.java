@@ -220,7 +220,7 @@ abstract public class EventFilter2D extends EventFilter {
 
   // <editor-fold defaultstate="collapsed" desc=" Peter's Bells & Whistles " >
   ArrayList<JPanel> customControls; // List of added controls
-  ArrayList<Component> customDisplays = new ArrayList(); // List of added displays
+  ArrayList<Component> customDisplays = new ArrayList<>(); // List of added displays
 
   /** Add your own display to the display area */
   public void addDisplay(Component disp) {

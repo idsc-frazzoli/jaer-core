@@ -61,7 +61,7 @@ public class AEUnicastInput implements AEUnicastSettings, PropertyChangeListener
   private boolean sequenceNumberEnabled = prefs.getBoolean("AEUnicastInput.sequenceNumberEnabled", true);
   private boolean cAERStreamEnabled = prefs.getBoolean("AEUnicastInput.cAERDisplayEnabled", true);
   private boolean addressFirstEnabled = prefs.getBoolean("AEUnicastInput.addressFirstEnabled", true);
-  private ArrayBlockingQueue<ByteBuffer> filledBufferQueue = new ArrayBlockingQueue(NBUFFERS), availableBufferQueue = new ArrayBlockingQueue(NBUFFERS);
+  private ArrayBlockingQueue<ByteBuffer> filledBufferQueue = new ArrayBlockingQueue<>(NBUFFERS), availableBufferQueue = new ArrayBlockingQueue<>(NBUFFERS);
   private AENetworkRawPacket packet = new AENetworkRawPacket();
   private static final Logger log = Logger.getLogger("AESocketStream");
   private int bufferSize = prefs.getInt("AEUnicastInput.bufferSize", AENetworkInterfaceConstants.DATAGRAM_BUFFER_SIZE_BYTES);
@@ -247,7 +247,7 @@ public class AEUnicastInput implements AEUnicastSettings, PropertyChangeListener
     int b2 = (value >> 8) & 0xff;
     int b3 = (value >> 16) & 0xff;
     int b4 = (value >> 24) & 0xff;
-    return b1 << 24 | b2 << 16 | b3 << 8 | b4 << 0;
+    return (b1 << 24) | (b2 << 16) | (b3 << 8) | (b4 << 0);
   }
 
   private short maybeSwapByteOrder(short value) {
@@ -256,7 +256,7 @@ public class AEUnicastInput implements AEUnicastSettings, PropertyChangeListener
     }
     int b1 = (value >> 0) & 0xff;
     int b2 = (value >> 8) & 0xff;
-    return (short) ((0xffff & (b1 << 8) | (0xffff & (b2 << 0))));
+    return (short) (((0xffff & (b1 << 8)) | (0xffff & (b2 << 0))));
   }
 
   private static ByteBuffer clone(ByteBuffer original) {
@@ -435,7 +435,7 @@ public class AEUnicastInput implements AEUnicastSettings, PropertyChangeListener
             secGen2TimestampLSB = timestamp;
           } else if (column > -1) {
             if ((byte0 & 0xff) == 204) {
-              int base_row = ((byte1 & 0xff) & 0x3f) * 8 + 1;// bitand(word(mapp(2)), 63) * 8 + 1;
+              int base_row = (((byte1 & 0xff) & 0x3f) * 8) + 1;// bitand(word(mapp(2)), 63) * 8 + 1;
               for (int ii = 0; ii < 8; ii++) {
                 if (((byte3 & 0xff) & (1 << ii)) > 0) {
                   int row = base_row + ii;
@@ -444,9 +444,9 @@ public class AEUnicastInput implements AEUnicastSettings, PropertyChangeListener
                   int address = row << 11;
                   address = address + (column << 1);
                   address = address + polarity;
-                  if (row >= 0 && row < 480 && column >= 0 && column < 640) {
+                  if ((row >= 0) && (row < 480) && (column >= 0) && (column < 640)) {
                     addresses[startingIndex + eventcounter] = address;
-                    timestamps[startingIndex + eventcounter] = secGen2TimestampMSB * 1000 + secGen2TimestampLSB;
+                    timestamps[startingIndex + eventcounter] = (secGen2TimestampMSB * 1000) + secGen2TimestampLSB;
                     eventcounter = eventcounter + 1;
                   }
                 }
@@ -457,9 +457,9 @@ public class AEUnicastInput implements AEUnicastSettings, PropertyChangeListener
                   int address = row << 11;
                   address = address + (column << 1);
                   address = address + polarity;
-                  if (row >= 0 && row < 480 && column >= 0 && column < 640) {
+                  if ((row >= 0) && (row < 480) && (column >= 0) && (column < 640)) {
                     addresses[startingIndex + eventcounter] = address;
-                    timestamps[startingIndex + eventcounter] = secGen2TimestampMSB * 1000 + secGen2TimestampLSB;
+                    timestamps[startingIndex + eventcounter] = (secGen2TimestampMSB * 1000) + secGen2TimestampLSB;
                     eventcounter = eventcounter + 1;
                   }
                 }
@@ -499,7 +499,7 @@ public class AEUnicastInput implements AEUnicastSettings, PropertyChangeListener
             jaer3PktNum = buffer.getInt(20);
             jaer3EventsNum = nEventsNum;
             wholePktBuffer = clone(buffer);
-            if (wholePktBuffer.position() == (jaer3PktSize * jaer3PktNum + 28)) { // This is the end buffer, the packet is finished.
+            if (wholePktBuffer.position() == ((jaer3PktSize * jaer3PktNum) + 28)) { // This is the end buffer, the packet is finished.
               wholePktBuffer.flip();
               j3Parser = new Jaer3BufferParser(wholePktBuffer, chip);
             } else {
@@ -516,7 +516,7 @@ public class AEUnicastInput implements AEUnicastSettings, PropertyChangeListener
               wholePktBuffer = null;
               return;
             }
-            if (wholePktBuffer.position() == (jaer3PktSize * jaer3PktNum + 28)) { // This is the end buffer, the packet is finished.
+            if (wholePktBuffer.position() == ((jaer3PktSize * jaer3PktNum) + 28)) { // This is the end buffer, the packet is finished.
               wholePktBuffer.flip();
               j3Parser = new Jaer3BufferParser(wholePktBuffer, chip);
             } else {
@@ -524,7 +524,7 @@ public class AEUnicastInput implements AEUnicastSettings, PropertyChangeListener
             }
           }
           newPacketLength = (int) (startingIndex + jaer3EventsNum);
-          packet.ensureCapacity((int) newPacketLength);
+          packet.ensureCapacity(newPacketLength);
           EventRaw.EventType[] etypes = packet.getEventtypes(); // For jAER 3.0, no influence on jAER 2.0
           int[] pixelDataArray = packet.getPixelDataArray();
           addresses = packet.getAddresses();
@@ -914,11 +914,13 @@ public class AEUnicastInput implements AEUnicastSettings, PropertyChangeListener
   }
 
   /** @return the secDvsProtocolEnabled */
+  @Override
   public boolean isSecDvsProtocolEnabled() {
     return secDvsProtocolEnabled;
   }
 
   /** @param secDvsProtocolEnabled the secDvsProtocolEnabled to set */
+  @Override
   public void setSecDvsProtocolEnabled(boolean secDvsProtocolEnabled) {
     this.secDvsProtocolEnabled = secDvsProtocolEnabled;
     spinnakerProtocolEnabled = false;

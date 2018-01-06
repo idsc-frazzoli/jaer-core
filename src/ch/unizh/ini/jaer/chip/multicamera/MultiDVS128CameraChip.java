@@ -12,6 +12,7 @@
 package ch.unizh.ini.jaer.chip.multicamera;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeMap;
 
 import ch.unizh.ini.jaer.chip.retina.DVS128;
@@ -72,6 +73,7 @@ public class MultiDVS128CameraChip extends DVS128 implements MultiCameraInterfac
     aeViewer.setLogFilteredEventsEnabled(false); // not supported for binocular reconstruction yet TODO
   }
 
+  @Override
   public AEChip getCamera(int i) {
     return cameras[i];
   }
@@ -126,7 +128,7 @@ public class MultiDVS128CameraChip extends DVS128 implements MultiCameraInterfac
       int n = in.getNumEvents(); // addresses.length;
       int skipBy = 1;
       if (isSubSamplingEnabled()) {
-        while (n / skipBy > getSubsampleThresholdEventCount()) {
+        while ((n / skipBy) > getSubsampleThresholdEventCount()) {
           skipBy++;
         }
       }
@@ -145,7 +147,7 @@ public class MultiDVS128CameraChip extends DVS128 implements MultiCameraInterfac
         int pol = a[i] & 1;
         e.polarity = pol == 0 ? PolarityEvent.Polarity.Off : PolarityEvent.Polarity.On;
         // combines polarity with camera to assign 2*NUM_CAMERA types
-        e.type = (byte) (2 * e.camera + pol); // assign e.type here so that superclasses don't get fooled by using default type of event for polarity event
+        e.type = (byte) ((2 * e.camera) + pol); // assign e.type here so that superclasses don't get fooled by using default type of event for polarity event
       }
       return out;
     }
@@ -172,7 +174,7 @@ public class MultiDVS128CameraChip extends DVS128 implements MultiCameraInterfac
       log.warning("trying to set hardware interface to " + hw
           + " but hardware interface should have been constructed as a MultiCameraHardwareInterface by this MultiDVS128CameraChip");
     }
-    if (hw != null && hw.isOpen()) {
+    if ((hw != null) && hw.isOpen()) {
       log.info("closing hw interface");
       hw.close();
     }
@@ -204,10 +206,10 @@ public class MultiDVS128CameraChip extends DVS128 implements MultiCameraInterfac
     if (n > MultiCameraEvent.NUM_CAMERAS) {
       log.info(n + " interfaces, searching them to find DVS128 interfaces");
     }
-    ArrayList<HardwareInterface> hws = new ArrayList();
+    List<HardwareInterface> hws = new ArrayList<>();
     for (int i = 0; i < n; i++) {
       HardwareInterface hw = HardwareInterfaceFactory.instance().getInterface(i);
-      if (hw instanceof AEMonitorInterface && hw instanceof BiasgenHardwareInterface) {
+      if ((hw instanceof AEMonitorInterface) && (hw instanceof BiasgenHardwareInterface)) {
         log.info("found AEMonitorInterface && BiasgenHardwareInterface " + hw);
         hws.add(hw);
       }

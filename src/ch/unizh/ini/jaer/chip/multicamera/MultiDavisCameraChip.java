@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.TreeMap;
 
 import javax.swing.Action;
@@ -68,7 +69,7 @@ abstract public class MultiDavisCameraChip extends DavisBaseCamera implements Mu
   int displaycamera;
   private float[][] displayFrame;
   private boolean displayAPSEnable = false;
-  public ArrayList<HardwareInterface> hws = new ArrayList();
+  public List<HardwareInterface> hws = new ArrayList<>();
   private int sx;
   private int sy;
   private int ADCMax;
@@ -103,9 +104,9 @@ abstract public class MultiDavisCameraChip extends DavisBaseCamera implements Mu
       multiCameraMenu = null;
     }
     if (camerasAEVs != null) {
-      for (int i = 0; i < camerasAEVs.length; i++) {
-        if (camerasAEVs[i] != null) {
-          camerasAEVs[i].setVisible(false);
+      for (AEViewer camerasAEV : camerasAEVs) {
+        if (camerasAEV != null) {
+          camerasAEV.setVisible(false);
         }
       }
     }
@@ -327,7 +328,7 @@ abstract public class MultiDavisCameraChip extends DavisBaseCamera implements Mu
       final ApsDvsEvent.ReadoutType type = e.getReadoutType();
       final float val = e.getAdcSample();
       final int idx = (e.y * sx) + e.x;
-      if (idx >= sx * sy) {
+      if (idx >= (sx * sy)) {
         return;
       }
       switch (type) {
@@ -389,7 +390,7 @@ abstract public class MultiDavisCameraChip extends DavisBaseCamera implements Mu
       log.warning("trying to set hardware interface to " + hw
           + " but hardware interface should have been constructed as a MultiCameraHardwareInterface by this MultiDAVIS240CCameraChip");
     }
-    if (hw != null && hw.isOpen()) {
+    if ((hw != null) && hw.isOpen()) {
       log.info("closing hw interface");
       hw.close();
     }
@@ -426,7 +427,7 @@ abstract public class MultiDavisCameraChip extends DavisBaseCamera implements Mu
     }
     for (int i = 0; i < n; i++) {
       HardwareInterface hw = HardwareInterfaceFactory.instance().getInterface(i);
-      if (hw instanceof AEMonitorInterface && hw instanceof BiasgenHardwareInterface) {
+      if ((hw instanceof AEMonitorInterface) && (hw instanceof BiasgenHardwareInterface)) {
         log.info("found AEMonitorInterface && BiasgenHardwareInterface " + hw);
         hws.add(hw);
       }

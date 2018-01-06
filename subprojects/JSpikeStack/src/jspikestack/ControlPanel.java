@@ -28,6 +28,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
@@ -46,6 +47,8 @@ import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import net.sf.jaer.eventprocessing.EventFilter;
 
 /** A panel for a filter that has Integer/Float/Boolean/String/enum getter/setter methods (bound properties).
  * These methods are introspected and a set of controls are built for them. Enclosed filters and
@@ -87,17 +90,17 @@ import javax.swing.event.ChangeListener;
  * public int getDt() {
  * return this.dt;
  * }
- * 
+ *
  * public void setDt(final int dt) {
  * getPrefs().putInt("BackgroundActivityFilter.dt",dt);
  * support.firePropertyChange("dt",this.dt,dt);
  * this.dt = dt;
  * }
- * 
+ *
  * public int getMinDt(){
  * return 10;
  * }
- * 
+ *
  * public int getMaxDt(){
  * return 100000;
  * }
@@ -134,7 +137,7 @@ import javax.swing.event.ChangeListener;
  * as shown next. Here two groups "Size" and "Timing" are defined and properties are added to each (or to neither for "multiOriOutputEnabled").
  * <pre>
  * final String size="Size", tim="Timing";
- * 
+ *
  * setPropertyTooltip(disp,"showGlobalEnabled", "shows line of average orientation");
  * setPropertyTooltip(tim,"minDtThreshold", "Coincidence time, events that pass this coincidence test are considerd for orientation output");
  * setPropertyTooltip(tim,"dtRejectMultiplier", "reject delta times more than this factor times minDtThreshold to reduce noise");
@@ -466,7 +469,7 @@ public class ControlPanel extends javax.swing.JPanel implements PropertyChangeLi
           groupPanel.add(control);
         }
       }
-      final ArrayList<JPanel> subcontrols = new ArrayList();
+      final List<JPanel> subcontrols = new ArrayList<>();
       ActionListener subrebuilder = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {

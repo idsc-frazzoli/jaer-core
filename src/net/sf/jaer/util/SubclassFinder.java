@@ -22,7 +22,7 @@ public class SubclassFinder {
   // TODO needs a way of caching in preferences the list of classes and the number or checksum of classes,
   // to reduce startup time, since this lookup of subclasses takes 10s of seconds on some machines
   /** List of regexp package names to exclude from search */
-  public static final ArrayList<String> exclusionList = new ArrayList();
+  public static final List<String> exclusionList = new ArrayList<>();
   // static{
   // exclusionList.add("com.jogamp.*");
   // exclusionList.add("jogamp.*");
@@ -73,7 +73,7 @@ public class SubclassFinder {
 
     /** Constructs the worker thread for finding subclasses of clazz.
      * This constructor also populates the exclusion list of packages that are excluded from consideration.
-     * 
+     *
      * @param clazz the worker to find subclasses of clazz */
     public SubclassFinderWorker(Class clazz) {
       this.clazz = clazz;
@@ -115,8 +115,8 @@ public class SubclassFinder {
       allclassloop: for (String s : allClasses) {
         i++;
         try {
-          int p = (int) ((float) i / nclasses * 100);
-          if (p > lastProgress + 5) {
+          int p = (int) (((float) i / nclasses) * 100);
+          if (p > (lastProgress + 5)) {
             setProgress(p);
             lastProgress = p;
           }
@@ -131,7 +131,7 @@ public class SubclassFinder {
             }
           }
           c = FastClassFinder.forName(s);
-          if (c == superClass || c == null) {
+          if ((c == superClass) || (c == null)) {
             continue; // don't add the superclass
           }
           if (Modifier.isAbstract(c.getModifiers())) {
@@ -229,7 +229,7 @@ public class SubclassFinder {
           }
         }
         c = FastClassFinder.forName(s); // THIS LINE THROWS ALL THE EXCEPTIONS
-        if (c == superClass || c == null) {
+        if ((c == superClass) || (c == null)) {
           continue; // don't add the superclass
         }
         if (Modifier.isAbstract(c.getModifiers())) {

@@ -17,6 +17,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.prefs.PreferenceChangeEvent;
@@ -392,9 +393,9 @@ public class CochleaAMS1c extends CochleaAMSNoBiasgen implements Observer, HasSy
     private OffChipPreampARRatio offchipPreampARRatio;
     private ArrayList<HasPreference> hasPreferencesList = new ArrayList<HasPreference>();
     // lists of ports and CPLD config
-    ArrayList<PortBit> portBits = new ArrayList();
-    ArrayList<CPLDConfigValue> cpldConfigValues = new ArrayList();
-    ArrayList<AbstractConfigValue> config = new ArrayList<AbstractConfigValue>();
+    List<PortBit> portBits = new ArrayList<>();
+    List<CPLDConfigValue> cpldConfigValues = new ArrayList<>();
+    List<AbstractConfigValue> config = new ArrayList<>();
     /** The DAC on the board. Specified with 5V reference even though Vdd=3.3 because the internal 2.5V reference is used and so that the VPot controls display
      * correct voltage. */
     protected final DAC dac = new DAC(32, 12, 0, 5f, 3.3f); // the DAC object here is actually 2 16-bit DACs daisy-chained on the Cochlea board; both
@@ -1128,7 +1129,7 @@ public class CochleaAMS1c extends CochleaAMSNoBiasgen implements Observer, HasSy
     /** Handles CPLD configuration shift register. This class maintains the information in the CPLD shift register. */
     class CPLDConfig {
       int numBits, minBit = Integer.MAX_VALUE, maxBit = Integer.MIN_VALUE;
-      ArrayList<CPLDConfigValue> cpldConfigValues = new ArrayList();
+      List<CPLDConfigValue> cpldConfigValues = new ArrayList<>();
       boolean[] bits;
       byte[] bytes = null;
 

@@ -10,6 +10,7 @@ import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -24,7 +25,7 @@ public abstract class Controllable implements Serializable {
   // /** The keys are the names of property groups, and the values are lists of properties in the key's group.*/
   // protected HashMap<String, ArrayList<String>> group2PropertyListMap = null;
   // EventListener listener=new EventListener() {};
-  transient ArrayList<ActionListener> listeners = new ArrayList();
+  transient List<ActionListener> listeners = new ArrayList<>();
   // public SpikeStack net;
 
   // public static enum Options {LIF_STP_RBM,LIF_BASIC_RBM};
@@ -35,19 +36,21 @@ public abstract class Controllable implements Serializable {
     getListeners().add(l);
   }
 
-  public ArrayList<ActionListener> getListeners() {
-    if (listeners == null)
-      listeners = new ArrayList();
+  public List<ActionListener> getListeners() {
+    if (listeners == null) {
+      listeners = new ArrayList<>();
+    }
     return listeners;
   }
 
   public void updateControl() {
-    for (ActionListener ac : getListeners())
+    for (ActionListener ac : getListeners()) {
       ac.actionPerformed(new ActionEvent(this, 0, "garbage"));
+    }
   }
 
-  public ArrayList<Controllable> getSubControllers() {
-    return new ArrayList();
+  public List<Controllable> getSubControllers() {
+    return new ArrayList<>();
   }
 
   /** Fires PropertyChangeEvents when filter is enabled or disabled with key "filterEnabled"
@@ -98,7 +101,7 @@ public abstract class Controllable implements Serializable {
     return propertyTooltipMap.get(propertyName.toLowerCase());
   }
   /** Adds a property to a group, creating the group if needed.
-   * 
+   *
    * @param groupName a named parameter group.
    * @param propertyName the property name. */
   // protected void addPropertyToGroup(String groupName, String propertyName) {
@@ -142,7 +145,7 @@ public abstract class Controllable implements Serializable {
   // return group2PropertyListMap.get(groupName);
   // }
   /** Returns the set of property groups.
-   * 
+   *
    * @return Set view of property groups. */
   // protected Set<String> getPropertyGroupSet() {
   // if (group2PropertyListMap == null) {
@@ -152,7 +155,7 @@ public abstract class Controllable implements Serializable {
   // }
   /** Returns the mapping from property name to group name.
    * If null, no groups have been declared.
-   * 
+   *
    * @return the map, or null if no groups have been declared by adding any properties.
    * @see #property2GroupMap */
   // public HashMap<String, String> getPropertyGroupMap() {

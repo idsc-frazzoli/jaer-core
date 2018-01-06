@@ -19,7 +19,7 @@ import net.sf.jaer.chip.AEChip;
  * the user shuffle them from one side to the other and reorder the chosen class names.
  * Use it by contructing a new instance, making it visible (this call will magically block until
  * the user presses OK or Cancel), and then calling <code>getReturnValue()</code>.
- * 
+ *
  * @author tobi */
 public class ClassChooserDialog extends javax.swing.JDialog {
   /** A return status code - returned if Cancel button has been pressed */
@@ -58,12 +58,12 @@ public class ClassChooserDialog extends javax.swing.JDialog {
     return returnStatus;
   }
 
-  public ArrayList<String> getList() {
+  public List<String> getList() {
     if (returnStatus == RET_CANCEL) {
       return null;
     }
     Object[] oa = chooserPanel.getChosenClassesListModel().toArray();
-    ArrayList<String> ret = new ArrayList(Arrays.asList(oa));
+    List<String> ret = new ArrayList(Arrays.asList(oa));
     return ret;
   }
 

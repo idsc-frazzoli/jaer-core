@@ -5,16 +5,17 @@
 package jspikestack;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /** This Axon-connection allows for specifically targeted connections between
  * layers (as opposed to all-to-all connectivity). This allows layers with
  * sparse interconnections to be simulated much more efficiently. Each neuron
  * in the pre-Layer has a list of target addresses in the post-layer.
- * 
+ *
  * In addition, there are several methods for creating 2-D "convolutional"
  * connections between layers. This is done by specifying dimensions of a layer
  * and then assigning a 2-D kernel, which is transformed into a weight-mapping.
- * 
+ *
  * @author oconnorp */
 public class AxonSparse<GlobalParams extends AxonSparse.Globals, PSPType extends PSPUnitToLayer> extends Axon<GlobalParams, PSPType> {
   int[][] targets; // Addresses of forward connections
@@ -32,13 +33,13 @@ public class AxonSparse<GlobalParams extends AxonSparse.Globals, PSPType extends
   }
 
   /** Define a the sparse weights based on a convolutional kernel
-   * 
+   *
    * Each neuron in the output layer will receive inputs from a region of the
    * input layer corresponding to the size of the kernel.
-   * 
+   *
    * It's required that the dimx, dimy parameters of both the input and output
    * layers be defined.
-   * 
+   *
    * @param wk */
   public void defineKernel(final float wk[][]) {
     KernelMaker2D.FloatConnection conn = KernelMaker2D.invert(wk, preLayer.dimx, preLayer.dimy, postLayer.dimx, postLayer.dimy);
@@ -48,8 +49,9 @@ public class AxonSparse<GlobalParams extends AxonSparse.Globals, PSPType extends
 
   @Override
   void check() {
-    if (w == null || (w.length > 0 && w[0] == null))
+    if ((w == null) || ((w.length > 0) && (w[0] == null))) {
       throw new RuntimeException(getName() + ": Weights are not initialized!  See function \"initWeights\" or \"defineKernel\".");
+    }
   }
 
   // public class Connection
@@ -70,7 +72,7 @@ public class AxonSparse<GlobalParams extends AxonSparse.Globals, PSPType extends
 
   public void setKernelControl(KernelMaker2D.Computable kernel, int dimx, int dimy) {
     Controller cont = (Controller) getControls();
-    KernelController k = (KernelController) cont.getKernelController();
+    KernelController k = cont.getKernelController();
     k.type = KernelMaker2D.getKernelClass(kernel.getClass());
     k.dimx = dimx;
     k.dimy = dimy;
@@ -83,14 +85,15 @@ public class AxonSparse<GlobalParams extends AxonSparse.Globals, PSPType extends
     KernelController kcon;
 
     public KernelController getKernelController() {
-      if (kcon == null)
+      if (kcon == null) {
         kcon = new KernelController();
+      }
       return kcon;
     }
 
     @Override
-    public ArrayList<Controllable> getSubControllers() {
-      ArrayList<Controllable> arr = new ArrayList();
+    public List<Controllable> getSubControllers() {
+      List<Controllable> arr = new ArrayList<>();
       // if (kcon!=null)
       // { kcon=new KernelController();
       // }
@@ -128,10 +131,11 @@ public class AxonSparse<GlobalParams extends AxonSparse.Globals, PSPType extends
     }
 
     @Override
-    public ArrayList<Controllable> getSubControllers() {
-      ArrayList<Controllable> arr = new ArrayList();
-      if (kernel == null)
+    public List<Controllable> getSubControllers() {
+      List<Controllable> arr = new ArrayList<>();
+      if (kernel == null) {
         kernel = KernelMaker2D.newKernel(getType());
+      }
       arr.add(kernel);
       return arr;
     }

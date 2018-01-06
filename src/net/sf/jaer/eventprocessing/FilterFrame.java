@@ -556,7 +556,7 @@ public class FilterFrame<PanelType extends FilterPanel> extends javax.swing.JFra
   }
 
   // list of individual filter panels
-  protected ArrayList<PanelType> filterPanels = new ArrayList();
+  protected ArrayList<PanelType> filterPanels = new ArrayList<>();
 
   /** rebuilds the frame contents using the existing filters in the filterChain */
   public void rebuildContents() {

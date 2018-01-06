@@ -5,6 +5,7 @@
 package jspikestack;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -23,15 +24,17 @@ public class MultiReaderQueue<T> {
     }
   }
 
-  final ArrayList<Subscriber> subs = new ArrayList();
+  final List<Subscriber> subs = new ArrayList<>();
 
   // Collection<LinkedBlockingQueue<T>> queues=new ArrayList();
   public void removerReader(Queue r) {
     synchronized (subs) {
-      for (Subscriber s : subs)
-        if (s.queue == r)
+      for (Subscriber s : subs) {
+        if (s.queue == r) {
           s.kill = true;
-      // subs.remove(s);
+          // subs.remove(s);
+        }
+      }
     }
   }
 
@@ -44,8 +47,9 @@ public class MultiReaderQueue<T> {
       if (s.kill) {
         subs.remove(i);
         continue;
-      } else if (s.comp.compareTo(el) > 0)
+      } else if (s.comp.compareTo(el) > 0) {
         s.queue.add(el);
+      }
       i++;
     }
     // else
@@ -63,8 +67,9 @@ public class MultiReaderQueue<T> {
     String st = "MultiReaderQueue: " + nReaders + " readers";
     if (nReaders < 5) {
       st += " with sizes [";
-      for (Subscriber s : subs)
+      for (Subscriber s : subs) {
         st += s.queue.size() + " ";
+      }
       st += "], respectively";
     }
     return st;
@@ -73,8 +78,9 @@ public class MultiReaderQueue<T> {
 
   public void clear() {
     synchronized (subs) {
-      for (Subscriber s : subs)
+      for (Subscriber s : subs) {
         s.queue.clear();
+      }
     }
   }
 

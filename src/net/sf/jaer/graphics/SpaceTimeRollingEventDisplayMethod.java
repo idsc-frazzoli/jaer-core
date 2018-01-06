@@ -20,6 +20,7 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.prefs.Preferences;
 
@@ -79,7 +80,7 @@ public class SpaceTimeRollingEventDisplayMethod extends DisplayMethod implements
   private final FloatBuffer mv = FloatBuffer.allocate(16);
   private final FloatBuffer proj = FloatBuffer.allocate(16);
   private int idMv, idProj, idt0, idt1, idPointSize;
-  private ArrayList<BasicEvent> eventList = null, eventListTmp = null;
+  private List<BasicEvent> eventList = null, eventListTmp = null;
   private ByteBuffer eventVertexBuffer;
   private int timeWindowUs = 100000, t0;
   private static final int EVENT_SIZE_BYTES = (Float.SIZE / 8) * 3;// size of event in shader ByteBuffer
@@ -175,7 +176,7 @@ public class SpaceTimeRollingEventDisplayMethod extends DisplayMethod implements
 
   private void checkEventListAllocation(int sizeEvents) {
     if (eventList == null) {
-      eventList = new ArrayList(sizeEvents);
+      eventList = new ArrayList<>(sizeEvents);
     }
   }
 
@@ -287,7 +288,7 @@ public class SpaceTimeRollingEventDisplayMethod extends DisplayMethod implements
       return;
     }
     if (eventListTmp == null) {
-      eventListTmp = new ArrayList(eventList.size());
+      eventListTmp = new ArrayList<>(eventList.size());
     } else {
       eventListTmp.clear();
     }
@@ -297,7 +298,7 @@ public class SpaceTimeRollingEventDisplayMethod extends DisplayMethod implements
       }
     }
     eventList.clear();
-    ArrayList<BasicEvent> tmp = eventList;
+    List<BasicEvent> tmp = eventList;
     eventList = eventListTmp;
     eventListTmp = tmp;
   }

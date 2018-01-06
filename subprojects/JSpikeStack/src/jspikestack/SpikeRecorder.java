@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
@@ -93,10 +94,10 @@ public class SpikeRecorder<SpikeType extends Spike> {
   }
 
   // Return a spike array
-  public ArrayList<Spike> toArray() {
+  public List<Spike> toArray() {
     // Spike[] sp=new Spike[nSpikes()];
     // Iterator itr=spikes.iterator();
-    ArrayList<Spike> spikeList = new ArrayList();
+    List<Spike> spikeList = new ArrayList<>();
     for (Spike sp : spikes) {
       spikeList.add(sp);
     }

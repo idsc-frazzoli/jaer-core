@@ -11,7 +11,7 @@ import java.awt.GridBagLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -112,10 +112,11 @@ public class MultiInputPanel extends FilterPanel {
   }
 
   public String[] getSourceNames() {
-    ArrayList<PacketStream> sources = node.getSourceOptions();
+    List<PacketStream> sources = node.getSourceOptions();
     String[] names = new String[sources.size()];
-    for (int i = 0; i < sources.size(); i++)
+    for (int i = 0; i < sources.size(); i++) {
       names[i] = sources.get(i).getName();
+    }
     return names;
   }
 
@@ -144,7 +145,7 @@ public class MultiInputPanel extends FilterPanel {
     }
 
     /** Add a source controller that changes the packet source streams upon selection */
-    public SourceControl(final ArrayList<PacketStream> sources, final ProcessingNetwork.Node f, final String name, final int sourceIndex) {
+    public SourceControl(final List<PacketStream> sources, final ProcessingNetwork.Node f, final String name, final int sourceIndex) {
       super();
       filter = f;
       setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
@@ -155,8 +156,9 @@ public class MultiInputPanel extends FilterPanel {
       // addTip(f, label);
       add(label);
       String[] names = new String[sources.size()];
-      for (int i = 0; i < sources.size(); i++)
+      for (int i = 0; i < sources.size(); i++) {
         names[i] = sources.get(i).getName();
+      }
       control = new JComboBox(names);
       control.setFont(control.getFont().deriveFont(fontSize));
       // control.setHorizontalAlignment(SwingConstants.LEADING);

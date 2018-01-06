@@ -12,6 +12,7 @@
 package ch.unizh.ini.jaer.chip.stereopsis;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import eu.seebetter.ini.chips.davis.DAVIS240C;
 import eu.seebetter.ini.chips.davis.DavisBaseCamera;
@@ -65,11 +66,13 @@ public class Davis240CStereoPair extends DavisBaseCamera implements StereoChipIn
     ArrayList<DisplayMethod> ms = getCanvas().getDisplayMethods();
     DisplayMethod rgbaDm = null;
     for (DisplayMethod m : ms) {
-      if (m instanceof ChipRendererDisplayMethodRGBA)
+      if (m instanceof ChipRendererDisplayMethodRGBA) {
         rgbaDm = m;
+      }
     }
-    if (rgbaDm != null)
+    if (rgbaDm != null) {
       getCanvas().removeDisplayMethod(rgbaDm);
+    }
     DisplayMethod m = new ChipRendererDisplayMethod(this.getCanvas()); // remove method that is incompatible with renderer
     getCanvas().addDisplayMethod(m);
     getCanvas().setDisplayMethod(m);
@@ -93,23 +96,28 @@ public class Davis240CStereoPair extends DavisBaseCamera implements StereoChipIn
     aeViewer.setLogFilteredEventsEnabled(false); // not supported for binocular reconstruction yet TODO
   }
 
+  @Override
   public AEChip getLeft() {
     return left;
   }
 
+  @Override
   public AEChip getRight() {
     return right;
   }
 
+  @Override
   public void setLeft(AEChip left) {
     this.left = left;
   }
 
+  @Override
   public void setRight(AEChip right) {
     this.right = right;
   }
 
   /** swaps the left and right hardware channels. This method can be used if the hardware interfaces are incorrectly assigned. */
+  @Override
   public void swapEyes() {
     AEChip tmp = getLeft();
     setLeft(getRight());
@@ -144,7 +152,7 @@ public class Davis240CStereoPair extends DavisBaseCamera implements StereoChipIn
       int n = in.getNumEvents(); // addresses.length;
       int skipBy = 1;
       if (isSubSamplingEnabled()) {
-        while (n / skipBy > getSubsampleThresholdEventCount()) {
+        while ((n / skipBy) > getSubsampleThresholdEventCount()) {
           skipBy++;
         }
       }
@@ -197,7 +205,7 @@ public class Davis240CStereoPair extends DavisBaseCamera implements StereoChipIn
     if (hw != null) {
       log.warning("trying to set hardware interface to " + hw + " but hardware interface is built as StereoHardwareInterface by this device");
     }
-    if (hw != null && hw.isOpen()) {
+    if ((hw != null) && hw.isOpen()) {
       log.info("closing hw interface");
       hw.close();
     }
@@ -228,10 +236,10 @@ public class Davis240CStereoPair extends DavisBaseCamera implements StereoChipIn
     if (n > 2) {
       log.info(n + " interfaces, searching them to find DVS128 interfaces");
     }
-    ArrayList<HardwareInterface> hws = new ArrayList();
+    List<HardwareInterface> hws = new ArrayList<>();
     for (int i = 0; i < n; i++) {
       HardwareInterface hw = HardwareInterfaceFactory.instance().getInterface(i);
-      if (hw instanceof AEMonitorInterface && hw instanceof CypressFX2DVS128HardwareInterface) {
+      if ((hw instanceof AEMonitorInterface) && (hw instanceof CypressFX2DVS128HardwareInterface)) {
         log.info("found AEMonitorInterface && BiasgenHardwareInterface " + hw);
         hws.add(hw);
       }
@@ -249,7 +257,7 @@ public class Davis240CStereoPair extends DavisBaseCamera implements StereoChipIn
       hw1.open();
       USBInterface usb1 = (USBInterface) hw1;
       String[] sa2 = usb1.getStringDescriptors();
-      if (sa1.length < 3 || sa2.length < 3) {
+      if ((sa1.length < 3) || (sa2.length < 3)) {
         log.warning("one or both interfaces has no serial number, cannot guarentee assignment of left/right eyes");
       } else {
         String id0 = sa1[2];

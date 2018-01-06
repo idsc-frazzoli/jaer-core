@@ -12,6 +12,7 @@
 package ch.unizh.ini.jaer.chip.stereopsis;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ch.unizh.ini.jaer.chip.retina.DVS128;
 import net.sf.jaer.Description;
@@ -84,23 +85,28 @@ public class DVS128StereoPair extends DVS128 implements StereoChipInterface {
     aeViewer.setLogFilteredEventsEnabled(false); // not supported for binocular reconstruction yet TODO
   }
 
+  @Override
   public AEChip getLeft() {
     return left;
   }
 
+  @Override
   public AEChip getRight() {
     return right;
   }
 
+  @Override
   public void setLeft(AEChip left) {
     this.left = left;
   }
 
+  @Override
   public void setRight(AEChip right) {
     this.right = right;
   }
 
   /** swaps the left and right hardware channels. This method can be used if the hardware interfaces are incorrectly assigned. */
+  @Override
   public void swapEyes() {
     AEChip tmp = getLeft();
     setLeft(getRight());
@@ -135,7 +141,7 @@ public class DVS128StereoPair extends DVS128 implements StereoChipInterface {
       int n = in.getNumEvents(); // addresses.length;
       int skipBy = 1;
       if (isSubSamplingEnabled()) {
-        while (n / skipBy > getSubsampleThresholdEventCount()) {
+        while ((n / skipBy) > getSubsampleThresholdEventCount()) {
           skipBy++;
         }
       }
@@ -188,7 +194,7 @@ public class DVS128StereoPair extends DVS128 implements StereoChipInterface {
     if (hw != null) {
       log.warning("trying to set hardware interface to " + hw + " but hardware interface is built as StereoHardwareInterface by this device");
     }
-    if (hw != null && hw.isOpen()) {
+    if ((hw != null) && hw.isOpen()) {
       log.info("closing hw interface");
       hw.close();
     }
@@ -219,10 +225,10 @@ public class DVS128StereoPair extends DVS128 implements StereoChipInterface {
     if (n > 2) {
       log.info(n + " interfaces, searching them to find DVS128 interfaces");
     }
-    ArrayList<HardwareInterface> hws = new ArrayList();
+    List<HardwareInterface> hws = new ArrayList<>();
     for (int i = 0; i < n; i++) {
       HardwareInterface hw = HardwareInterfaceFactory.instance().getInterface(i);
-      if (hw instanceof AEMonitorInterface && hw instanceof CypressFX2DVS128HardwareInterface) {
+      if ((hw instanceof AEMonitorInterface) && (hw instanceof CypressFX2DVS128HardwareInterface)) {
         log.info("found AEMonitorInterface && BiasgenHardwareInterface " + hw);
         hws.add(hw);
       }
@@ -240,7 +246,7 @@ public class DVS128StereoPair extends DVS128 implements StereoChipInterface {
       hw1.open();
       USBInterface usb1 = (USBInterface) hw1;
       String[] sa2 = usb1.getStringDescriptors();
-      if (sa1.length < 3 || sa2.length < 3) {
+      if ((sa1.length < 3) || (sa2.length < 3)) {
         log.warning("one or both interfaces has no serial number, cannot guarentee assignment of left/right eyes");
       } else {
         String id0 = sa1[2];

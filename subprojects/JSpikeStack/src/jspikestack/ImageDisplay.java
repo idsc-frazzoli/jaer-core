@@ -16,6 +16,7 @@ import java.awt.geom.Rectangle2D;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 import java.util.logging.Logger;
 
@@ -45,19 +46,19 @@ import com.jogamp.opengl.util.awt.TextRenderer;
  *
  *
  * <pre>
- * 
+ *
  * public static void main(String[] args) {
- * 
+ *
  * final ImageDisplay disp = ImageDisplay.createOpenGLCanvas(); // makde a new ImageDisplay GLCanvas with default OpenGL capabilities
  * JFrame frame = new JFrame("ImageFrame"); // make a JFrame to hold it
  * frame.setPreferredSize(new Dimension(400, 400)); // set the window size
  * frame.getContentPane().add(disp, BorderLayout.CENTER); // add the GLCanvas to the center of the window
  * int size = 200; // used later to define image size
- * 
+ *
  * disp.setSize(size,size); // set dimensions of image
- * 
+ *
  * disp.addKeyListener(new KeyAdapter() { // add some key listeners to the ImageDisplay
- * 
+ *
  * public void keyReleased(KeyEvent e) {
  * System.out.println(e.toString());
  * int k = e.getKeyCode();
@@ -79,20 +80,20 @@ import com.jogamp.opengl.util.awt.TextRenderer;
  * frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // closing the frame exits
  * frame.pack(); // otherwise it wont fill up the display
  * frame.setVisible(true); // make the frame visible
- * 
+ *
  * disp.setxLabel("x label"); // add xaxis label and some tick markers
  * disp.addXTick(0, "0");
  * disp.addXTick(size, Integer.toString(size));
  * disp.addXTick(size / 2, Integer.toString(size / 2));
- * 
+ *
  * disp.setyLabel("y label"); // same for y axis
  * disp.addYTick(0, "0");
  * disp.addYTick(size, Integer.toString(size));
  * disp.addYTick(size / 2, Integer.toString(size / 2));
- * 
- * 
+ *
+ *
  * Random r = new Random(); // will use to fill display with noise
- * 
+ *
  * int frameCounter = 0; // iterate over frame updates
  * while (true) {
  * disp.checkPixmapAllocation(); // make sure we have a pixmaps (not resally necessary since setting size will allocate pixmap
@@ -117,31 +118,31 @@ import com.jogamp.opengl.util.awt.TextRenderer;
  * // int xx = r.nextInt(disp.getSizeX());
  * // int yy = r.nextInt(disp.getSizeY());
  * // disp.setPixmapGray(xx, yy, r.nextFloat());
- * 
+ *
  * // clear frame to black
  * // disp.resetFrame(0);
- * 
+ *
  * // randomly set a pixel to some RGB value
  * int xx = r.nextInt(disp.getSizeX());
  * int yy = r.nextInt(disp.getSizeY());
  * disp.setPixmapRGB(xx, yy, r.nextFloat(), r.nextFloat(), r.nextFloat());
- * 
+ *
  * // randomly change axes font size
  * // if(frameCounter%1000==0){
  * // disp.setFontSize(r.nextInt(60));
  * // }
- * 
- * 
+ *
+ *
  * disp.setTitleLabel("Frame " + (frameCounter++));
- * 
+ *
  * // ask for a repaint
  * disp.repaint();
- * 
+ *
  * }
  * }
  *
  *
- * 
+ *
  * </pre>
  * @author Tobi Delbruck */
 public class ImageDisplay extends GLCanvas implements GLEventListener {
@@ -168,7 +169,7 @@ public class ImageDisplay extends GLCanvas implements GLEventListener {
   boolean reshapePending = false;
   private HashMap<Integer, String> xticks, yticks;
   private float[] textColor = new float[] { 1, 1, 1 };
-  private ArrayList<Legend> legends = new ArrayList();
+  private List<Legend> legends = new ArrayList<>();
 
   /** Creates a new ImageDisplay, given some Open GL capabilities.
    *
@@ -524,7 +525,7 @@ public class ImageDisplay extends GLCanvas implements GLEventListener {
    * orthographic projection that is the size of the
    * canvas with z volume -ZCLIP to ZCLIP padded with
    * extra space around the sides.
-   * 
+   *
    * @param g the GL context
    * @param d the GLAutoDrawable canvas */
   protected void setDefaultProjection(GL2 g, GLAutoDrawable d) {

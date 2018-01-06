@@ -62,12 +62,14 @@ public class AEServerSocket extends Thread {
     setName("AEServerSocket port=" + port);
   }
 
+  @Override
   public String toString() {
     return "AEServerSocket on port=" + port;
   }
 
   /** Accepts incoming connections and manufactures AESocket's for them. Currently only a single
    * client is supported. */
+  @Override
   public void run() {
     if (serverSocket == null) {
       return; // port was already bound
@@ -215,7 +217,7 @@ public class AEServerSocket extends Thread {
    * <ul>
    * <li> "clientconnected" - when a client has connected to us.
    * </ul>
-   * 
+   *
    * @return the support. */
   public PropertyChangeSupport getSupport() {
     return support;

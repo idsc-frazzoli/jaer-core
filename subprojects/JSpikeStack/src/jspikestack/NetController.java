@@ -349,8 +349,8 @@ public class NetController<AxonType extends Axon, LayerGlobalType extends Contro
     }
 
     @Override
-    public ArrayList<Controllable> getSubControllers() {
-      ArrayList<Controllable> cp = new ArrayList();
+    public List<Controllable> getSubControllers() {
+      List<Controllable> cp = new ArrayList<>();
       cp.add(new SimulationControls());
       if (buildersEnabled) {
         cp.add(new BuilderControls());
@@ -387,14 +387,14 @@ public class NetController<AxonType extends Axon, LayerGlobalType extends Contro
     }
 
     @Override
-    public ArrayList<Controllable> getSubControllers() {
+    public List<Controllable> getSubControllers() {
       if (layerBuilder == null) {
         layerBuilder = new LayerAdder();
       }
       if (axonBuilder == null) {
         axonBuilder = new AxonAdder();
       }
-      ArrayList<Controllable> arr = new ArrayList();
+      List<Controllable> arr = new ArrayList<>();
       arr.add(layerBuilder);
       arr.add(axonBuilder);
       return arr;

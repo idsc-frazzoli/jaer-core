@@ -21,6 +21,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -80,7 +81,7 @@ public class XYTypeFilter extends EventFilter2D implements FrameAnnotater, Obser
   private static float lineWidth = 1f;
   private int startx, starty, endx, endy;
   private boolean multiSelectionEnabled = prefs().getBoolean("XYTypeFilter.multiSelectionEnabled", false);
-  private ArrayList<SelectionRectangle> selectionList = new ArrayList(1);
+  private List<SelectionRectangle> selectionList = new ArrayList<>(1);
 
   synchronized public void doEraseSelections() {
     selectionList.clear();
@@ -149,7 +150,7 @@ public class XYTypeFilter extends EventFilter2D implements FrameAnnotater, Obser
     while (itr.hasNext()) {
       // for (Object obj : in) {
       BasicEvent e = (BasicEvent) (itr.next());
-      if (e.isFilteredOut() || (e instanceof ApsDvsEvent && !((ApsDvsEvent) e).isDVSEvent())) {
+      if (e.isFilteredOut() || ((e instanceof ApsDvsEvent) && !((ApsDvsEvent) e).isDVSEvent())) {
         continue;
       }
       block(e);

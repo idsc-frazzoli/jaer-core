@@ -17,7 +17,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -55,6 +55,7 @@ public class JAERDataViewer extends javax.swing.JFrame {
     pnlGraph.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
     pnlGraphContainer.setLayout(new GridLayout(0, 1));
     pnlGraph.setUpdateEvent(new GraphPanelUpdateEvent() {
+      @Override
       public void update() {
         updateAxeBoxes();
       }
@@ -94,35 +95,41 @@ public class JAERDataViewer extends javax.swing.JFrame {
     pnlGraphContainer.setLayout(null);
     btnIsAutosize.setText("Autoscale");
     btnIsAutosize.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         btnIsAutosizeActionPerformed(evt);
       }
     });
     txtMinY.setText("jTextField1");
     txtMinY.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         txtMaxXActionPerformed(evt);
       }
     });
     txtMaxY.setText("jTextField1");
     txtMaxY.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         txtMaxXActionPerformed(evt);
       }
     });
     txtMinX.setText("jTextField1");
     txtMinX.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         txtMaxXActionPerformed(evt);
       }
     });
     txtMaxX.setText("jTextField1");
     txtMaxX.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         txtMaxXActionPerformed(evt);
       }
     });
     txtMaxX.addFocusListener(new java.awt.event.FocusAdapter() {
+      @Override
       public void focusLost(java.awt.event.FocusEvent evt) {
         AxeBoxFocusLost(evt);
       }
@@ -131,10 +138,12 @@ public class JAERDataViewer extends javax.swing.JFrame {
     pnlGraphSelection.setFont(new java.awt.Font("Tahoma", 0, 8));
     pnlGraphSelection.setMaximumSize(new java.awt.Dimension(2680, 2680));
     pnlGraphSelection.addMouseListener(new java.awt.event.MouseAdapter() {
+      @Override
       public void mouseEntered(java.awt.event.MouseEvent evt) {
         pnlGraphSelectionMouseEntered(evt);
       }
 
+      @Override
       public void mouseExited(java.awt.event.MouseEvent evt) {
         pnlGraphSelectionMouseExited(evt);
       }
@@ -184,6 +193,7 @@ public class JAERDataViewer extends javax.swing.JFrame {
     tabData.add(jScrollPane1, java.awt.BorderLayout.CENTER);
     btnStoreTable.setText("Store to file");
     btnStoreTable.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         btnStoreTableActionPerformed(evt);
       }
@@ -193,12 +203,14 @@ public class JAERDataViewer extends javax.swing.JFrame {
     jbtnPeriodicUpdate.setSelected(true);
     jbtnPeriodicUpdate.setText("Periodic Update");
     jbtnPeriodicUpdate.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         jbtnPeriodicUpdateActionPerformed(evt);
       }
     });
     btnClose.setText("Close");
     btnClose.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         btnCloseActionPerformed(evt);
       }
@@ -224,7 +236,7 @@ public class JAERDataViewer extends javax.swing.JFrame {
   private void btnStoreTableActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btnStoreTableActionPerformed
     JFileChooser dlg = new JFileChooser();
     dlg.setAcceptAllFileFilterUsed(true);
-    if (dlg.showSaveDialog(this) == JFileChooser.APPROVE_OPTION)
+    if (dlg.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
       try {
         Cursor hourglassCursor = new Cursor(Cursor.WAIT_CURSOR);
         setCursor(hourglassCursor);
@@ -235,6 +247,7 @@ public class JAERDataViewer extends javax.swing.JFrame {
         Cursor hourglassCursor = new Cursor(Cursor.DEFAULT_CURSOR);
         setCursor(hourglassCursor);
       }
+    }
   }// GEN-LAST:event_btnStoreTableActionPerformed
 
   private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btnCloseActionPerformed
@@ -263,14 +276,16 @@ public class JAERDataViewer extends javax.swing.JFrame {
   }// GEN-LAST:event_pnlGraphSelectionMouseExited
 
   private void pnlGraphSelectionMouseEntered(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_pnlGraphSelectionMouseEntered
-    if (pnlGraphSelectioninside == true)
+    if (pnlGraphSelectioninside == true) {
       return;
+    }
     periodicUpdate(false);
     int min = pnlGraphSelectionWide = pnlGraphSelection.getWidth();
     min -= 20;
     for (int i = 0; i < pnlGraphSelection.getComponents().length; i++) {
-      if (pnlGraphSelection.getComponents()[i].getWidth() > min)
+      if (pnlGraphSelection.getComponents()[i].getWidth() > min) {
         min = pnlGraphSelection.getComponents()[i].getWidth();
+      }
     }
     pnlGraphSelection.setSize(min + 20, pnlGraphSelection.getHeight());
     pnlGraphSelectionLayout = pnlGraphSelection.getParent().getLayout();
@@ -306,10 +321,11 @@ public class JAERDataViewer extends javax.swing.JFrame {
   /** @param args the command line arguments */
   public static void main(String args[]) {
     java.awt.EventQueue.invokeLater(new Runnable() {
+      @Override
       public void run() {
         JAERDataViewer dv = new JAERDataViewer("Test");
-        ArrayList<Double> test = new ArrayList();
-        ArrayList<Double> testx = new ArrayList();
+        List<Double> test = new ArrayList<>();
+        List<Double> testx = new ArrayList<>();
         for (int n = 0; n < 100; n++) {
           testx.add(n, (double) n);
           test.add(n, Math.sin((double) n / 20));
@@ -320,7 +336,7 @@ public class JAERDataViewer extends javax.swing.JFrame {
         dv.addDataSet("sinus5", test, 2., true);
         dv.addDataSet("sinus6", testx, test);
         dv.addDataSet("sinus7", test, 3., true);
-        testx = new ArrayList();
+        testx = new ArrayList<>();
         testx.add(5.0);
         testx.add(2.0);
         dv.addDataSet("short", testx, 4., true);
@@ -336,9 +352,10 @@ public class JAERDataViewer extends javax.swing.JFrame {
     txtMinY.setText(String.format("%.2f", pnlGraph.getMinY()));
   }
 
-  public void addDataSet(final String Name, final ArrayList<Double> x, final ArrayList<Double> y, final double samplingRate, final DataType dataType,
+  public void addDataSet(final String Name, final List<Double> x, final List<Double> y, final double samplingRate, final DataType dataType,
       final LineStyle style, final Color color) {
     java.awt.EventQueue.invokeLater(new Runnable() {
+      @Override
       public void run() {
         GraphData gd = new GraphData();
         gd.Color = color;
@@ -356,6 +373,7 @@ public class JAERDataViewer extends javax.swing.JFrame {
           pnlGraphSelection.add(box);
           box.setFont(new java.awt.Font("Tahoma", 0, 8));
           box.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
               chkGraph(evt);
             }
@@ -375,17 +393,18 @@ public class JAERDataViewer extends javax.swing.JFrame {
     });
   }
 
-  public void addDataSet(String name, ArrayList<Double> y, double samplingRate, Boolean scrolling) {
+  public void addDataSet(String name, List<Double> y, double samplingRate, Boolean scrolling) {
     addDataSet(name, null, y, samplingRate, scrolling ? DataType.YScrolling : DataType.YScaling, LineStyle.Line,
         new Color(Color.HSBtoRGB((float) Math.random(), 1.0f, 0.5f)));
   }
 
-  public void addDataSet(String name, ArrayList<Double> x, ArrayList<Double> y) {
+  public void addDataSet(String name, List<Double> x, List<Double> y) {
     addDataSet(name, x, y, 0, DataType.XY, LineStyle.PointLine, new Color(Color.HSBtoRGB((float) Math.random(), 1.0f, 0.5f)));
   }
 
   public void removeDataSet(final String name) {
     java.awt.EventQueue.invokeLater(new Runnable() {
+      @Override
       public void run() {
         if (dataSets.containsKey(name)) {
           pnlGraph.removeData(name);
@@ -465,6 +484,7 @@ public class JAERDataViewer extends javax.swing.JFrame {
       this.tbl = tbl;
     }
 
+    @Override
     public void run() {
       cmp.repaint();
       tbl.update();
@@ -515,8 +535,8 @@ public class JAERDataViewer extends javax.swing.JFrame {
   // </editor-fold>
 
   public class GraphData {
-    public ArrayList<Double> X;
-    public ArrayList<Double> Y;
+    public List<Double> X;
+    public List<Double> Y;
     public DataType DataType;
     public LineStyle Style;
     public Color Color;
@@ -535,7 +555,7 @@ public class JAERDataViewer extends javax.swing.JFrame {
     }
 
     public synchronized void setData(String name, GraphData graph) {
-      if (graph.DataType == DataType.XY && graph.X == null) {
+      if ((graph.DataType == DataType.XY) && (graph.X == null)) {
         return;
       }
       currentGraphs.put(name, graph);
@@ -547,15 +567,17 @@ public class JAERDataViewer extends javax.swing.JFrame {
       this.fireTableStructureChanged();
     }
 
+    @Override
     public synchronized int getRowCount() {
       int max = 0;
-      if (currentGraphs.size() == 0)
+      if (currentGraphs.size() == 0) {
         return 0;
-      for (Iterator<GraphData> it = currentGraphs.values().iterator(); it.hasNext();) {
-        GraphData dt = it.next();
+      }
+      for (GraphData dt : currentGraphs.values()) {
         synchronized (dt.Y) {
-          if (dt.Y.size() > max)
+          if (dt.Y.size() > max) {
             max = dt.Y.size();
+          }
         }
       }
       return max;
@@ -563,10 +585,10 @@ public class JAERDataViewer extends javax.swing.JFrame {
 
     private int columncount_old = -1;
 
+    @Override
     public synchronized int getColumnCount() {
       int count = 0;
-      for (Iterator<GraphData> it = currentGraphs.values().iterator(); it.hasNext();) {
-        GraphData dt = it.next();
+      for (GraphData dt : currentGraphs.values()) {
         switch (dt.DataType) {
         case YScrolling:
         case YScaling:
@@ -582,10 +604,10 @@ public class JAERDataViewer extends javax.swing.JFrame {
       return count;
     }
 
+    @Override
     public synchronized Object getValueAt(int row, int column) {
       int count = -1;
-      for (Iterator<GraphData> it = currentGraphs.values().iterator(); it.hasNext();) {
-        GraphData dt = it.next();
+      for (GraphData dt : currentGraphs.values()) {
         synchronized (dt.Y) {
           switch (dt.DataType) {
           case YScrolling:
@@ -598,8 +620,9 @@ public class JAERDataViewer extends javax.swing.JFrame {
             if (count == column) {
               if (row < dt.X.size()) {
                 return dt.X.get(row);
-              } else
+              } else {
                 return null;
+              }
             }
             count += 1;
             break;
@@ -610,8 +633,9 @@ public class JAERDataViewer extends javax.swing.JFrame {
           if (count == column) {
             if (row < dt.Y.size()) {
               return dt.Y.get(row);
-            } else
+            } else {
               return null;
+            }
           }
         }
       }
@@ -620,6 +644,7 @@ public class JAERDataViewer extends javax.swing.JFrame {
       return null;
     }
 
+    @Override
     public synchronized String getColumnName(int column) {
       String retValue;
       // todo
@@ -627,6 +652,7 @@ public class JAERDataViewer extends javax.swing.JFrame {
       return retValue;
     }
 
+    @Override
     public Class<?> getColumnClass(int columnIndex) {
       return Double.class;
     }
@@ -655,8 +681,9 @@ public class JAERDataViewer extends javax.swing.JFrame {
       for (int r = 0; r < row_count; r++) {
         for (int c = 0; c < col_count; c++) {
           Object obj = getValueAt(r, c);
-          if (obj != null)
+          if (obj != null) {
             fw.write(obj.toString());
+          }
           fw.write("\t");
         }
         fw.write("\n");
@@ -691,10 +718,12 @@ public class JAERDataViewer extends javax.swing.JFrame {
       // gd.Y.add(n, Math.sin((double)n/20));
       // }
       // currentGraphs.put("test",gd);
-      if (resize_x)
+      if (resize_x) {
         doResiseX();
-      if (resize_y)
+      }
+      if (resize_y) {
         doResiseY();
+      }
       drawGrid(g2);
       // drawAxis(g2);
       drawData(g2);
@@ -717,11 +746,11 @@ public class JAERDataViewer extends javax.swing.JFrame {
       float[] dashPattern = { 3, 5 };
       g2.setStroke(new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10, dashPattern, 0));
       double step = this.getHeight() / 10.0;
-      for (int n = 0; n < this.getHeight() / 20; n++) {
+      for (int n = 0; n < (this.getHeight() / 20); n++) {
         g2.drawLine(0, this.getHeight() - (int) (n * step), this.getWidth(), this.getHeight() - (int) (n * step));
       }
       step = this.getWidth() / 20.0;
-      for (int n = 0; n < this.getWidth() / 20; n++) {
+      for (int n = 0; n < (this.getWidth() / 20); n++) {
         g2.drawLine((int) (n * step), 0, (int) (n * step), this.getHeight());
       }
     }
@@ -732,8 +761,7 @@ public class JAERDataViewer extends javax.swing.JFrame {
       int[] y;
       int length = 0;
       g2.setStroke(new BasicStroke());
-      for (Iterator<GraphData> it = currentGraphs.values().iterator(); it.hasNext();) {
-        GraphData dt = it.next();
+      for (GraphData dt : currentGraphs.values()) {
         g2.setColor(dt.Color);
         synchronized (dt.Y) {
           switch (dt.DataType) {
@@ -744,7 +772,7 @@ public class JAERDataViewer extends javax.swing.JFrame {
             int l = dt.Y.size() - length;
             for (n = 0; n < length; n++) {
               x[n] = n;
-              y[n] = (int) (this.getHeight() - (dt.Y.get(l + n) - (double) getMinY()) / (double) (max_y - getMinY()) * this.getHeight());
+              y[n] = (int) (this.getHeight() - (((dt.Y.get(l + n) - getMinY()) / (max_y - getMinY())) * this.getHeight()));
             }
             break;
           case YScaling:
@@ -754,7 +782,7 @@ public class JAERDataViewer extends javax.swing.JFrame {
             double scale = ((double) dt.Y.size()) / (double) length;
             for (n = 0; n < length; n++) {
               x[n] = n;
-              y[n] = (int) (this.getHeight() - (dt.Y.get((int) (n * scale)) - (double) getMinY()) / (double) (max_y - getMinY()) * this.getHeight());
+              y[n] = (int) (this.getHeight() - (((dt.Y.get((int) (n * scale)) - getMinY()) / (max_y - getMinY())) * this.getHeight()));
             }
             break;
           case XY:
@@ -763,8 +791,8 @@ public class JAERDataViewer extends javax.swing.JFrame {
             x = new int[length];
             y = new int[length];
             for (n = 0; n < length; n++) {
-              x[n] = (int) ((dt.X.get(n) - (double) getMinX()) / (double) (max_x - getMinX()) * this.getWidth());
-              y[n] = (int) (this.getHeight() - (dt.Y.get(n) - (double) getMinY()) / (double) (max_y - getMinY()) * this.getHeight());
+              x[n] = (int) (((dt.X.get(n) - getMinX()) / (max_x - getMinX())) * this.getWidth());
+              y[n] = (int) (this.getHeight() - (((dt.Y.get(n) - getMinY()) / (max_y - getMinY())) * this.getHeight()));
             }
             break;
           default:
@@ -772,14 +800,14 @@ public class JAERDataViewer extends javax.swing.JFrame {
             x = new int[length];
             y = new int[length];
           }
-          if (dt.Style == LineStyle.Point || dt.Style == LineStyle.PointLine) {
+          if ((dt.Style == LineStyle.Point) || (dt.Style == LineStyle.PointLine)) {
             for (n = 0; n < length; n++) {
               g2.setStroke(new BasicStroke(3.0f));
               g2.drawOval(x[n] - 2, y[n] - 2, 4, 4);
               g2.setStroke(new BasicStroke(1.0f));
             }
           }
-          if (dt.Style == LineStyle.Line || dt.Style == LineStyle.PointLine) {
+          if ((dt.Style == LineStyle.Line) || (dt.Style == LineStyle.PointLine)) {
             g2.drawPolyline(x, y, length);
           }
         }
@@ -788,8 +816,9 @@ public class JAERDataViewer extends javax.swing.JFrame {
 
     public void setResizeX(boolean resize_x) {
       this.resize_x = resize_x;
-      if (resize_x)
+      if (resize_x) {
         doResiseX();
+      }
       this.repaint();
     }
 
@@ -799,8 +828,9 @@ public class JAERDataViewer extends javax.swing.JFrame {
 
     public void setResizeY(boolean resize_y) {
       this.resize_y = resize_y;
-      if (resize_y)
+      if (resize_y) {
         doResiseY();
+      }
       this.repaint();
     }
 
@@ -809,7 +839,7 @@ public class JAERDataViewer extends javax.swing.JFrame {
     }
 
     public synchronized void setData(String name, GraphData graph) {
-      if (graph.DataType == DataType.XY && graph.X == null) {
+      if ((graph.DataType == DataType.XY) && (graph.X == null)) {
         return;
       }
       currentGraphs.put(name, graph);
@@ -824,11 +854,10 @@ public class JAERDataViewer extends javax.swing.JFrame {
     private synchronized void doResiseY() {
       double min = Double.MAX_VALUE;
       double max = Double.MIN_VALUE;
-      for (Iterator<GraphData> it = currentGraphs.values().iterator(); it.hasNext();) {
-        GraphData dt = it.next();
+      for (GraphData dt : currentGraphs.values()) {
         synchronized (dt.Y) {
           int l;
-          if (dt.DataType == dt.DataType.YScrolling) {
+          if (dt.DataType == DataType.YScrolling) {
             l = dt.Y.size() - Math.min(this.getWidth(), dt.Y.size());
             min = getMinY();
             max = getMaxY();
@@ -836,10 +865,12 @@ public class JAERDataViewer extends javax.swing.JFrame {
             l = 0;
           }
           for (int n = l; n < dt.Y.size(); n++) {
-            if (dt.Y.get(n) > max)
+            if (dt.Y.get(n) > max) {
               max = dt.Y.get(n);
-            if (dt.Y.get(n) < min)
+            }
+            if (dt.Y.get(n) < min) {
               min = dt.Y.get(n);
+            }
           }
         }
       }
@@ -851,8 +882,7 @@ public class JAERDataViewer extends javax.swing.JFrame {
       double min = Double.MAX_VALUE;
       double max = Double.MIN_VALUE;
       double time = 10;
-      for (Iterator<GraphData> it = currentGraphs.values().iterator(); it.hasNext();) {
-        GraphData dt = it.next();
+      for (GraphData dt : currentGraphs.values()) {
         if (dt.DataType == DataType.YScrolling) {
           time = dt.SamplingRate * this.getWidth();
           continue;
@@ -865,10 +895,12 @@ public class JAERDataViewer extends javax.swing.JFrame {
         }
         synchronized (dt.Y) {
           for (int n = 0; n < dt.X.size(); n++) {
-            if (dt.X.get(n) > max)
+            if (dt.X.get(n) > max) {
               max = dt.X.get(n);
-            if (dt.X.get(n) < min)
+            }
+            if (dt.X.get(n) < min) {
               min = dt.X.get(n);
+            }
           }
         }
       }
@@ -883,8 +915,9 @@ public class JAERDataViewer extends javax.swing.JFrame {
     public void setMinX(double min_x) {
       if (this.min_x != min_x) {
         this.min_x = min_x;
-        if (getUpdateEvent() != null)
+        if (getUpdateEvent() != null) {
           getUpdateEvent().update();
+        }
       }
     }
 
@@ -895,8 +928,9 @@ public class JAERDataViewer extends javax.swing.JFrame {
     public void setMinY(double min_y) {
       if (this.min_y != min_y) {
         this.min_y = min_y;
-        if (getUpdateEvent() != null)
+        if (getUpdateEvent() != null) {
           getUpdateEvent().update();
+        }
       }
     }
 
@@ -907,8 +941,9 @@ public class JAERDataViewer extends javax.swing.JFrame {
     public void setMaxX(double max_x) {
       if (this.max_x != max_x) {
         this.max_x = max_x;
-        if (getUpdateEvent() != null)
+        if (getUpdateEvent() != null) {
           getUpdateEvent().update();
+        }
       }
     }
 
@@ -919,8 +954,9 @@ public class JAERDataViewer extends javax.swing.JFrame {
     public void setMaxY(double max_y) {
       if (this.max_y != max_y) {
         this.max_y = max_y;
-        if (getUpdateEvent() != null)
+        if (getUpdateEvent() != null) {
           getUpdateEvent().update();
+        }
       }
     }
 

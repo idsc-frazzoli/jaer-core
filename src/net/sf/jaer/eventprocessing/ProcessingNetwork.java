@@ -125,8 +125,8 @@ public class ProcessingNetwork {
     }
 
     /** Return a list of possible input sources */
-    public ArrayList<PacketStream> getSourceOptions() {
-      ArrayList<PacketStream> arr = new ArrayList();
+    public List<PacketStream> getSourceOptions() {
+      List<PacketStream> arr = new ArrayList<>();
       for (PacketStream p : inputStreams) {
         arr.add(p);
       }
@@ -157,7 +157,7 @@ public class ProcessingNetwork {
       }
       // Step 2: Compute the output packet.
       if (isMultiInput) {
-        ArrayList<EventPacket> inputs = new ArrayList();
+        List<EventPacket> inputs = new ArrayList<>();
         for (PacketStream n : sources) {
           inputs.add(n.getPacket());
         }

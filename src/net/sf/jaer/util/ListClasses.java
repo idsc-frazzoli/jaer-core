@@ -88,7 +88,7 @@ public class ListClasses {
             : loadClassesFromJar(classpathElement));
       }
       HashSet<String> hash = new HashSet(classNames); // store only unique
-      classNames = new ArrayList(hash);
+      classNames = new ArrayList<>(hash);
       log.info("found " + classNames.size() + " classes in " + classpath);
     } catch (Exception e) {
       e.printStackTrace();
