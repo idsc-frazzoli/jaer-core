@@ -58,6 +58,7 @@ public class Axon<GlobalParams extends Axon.Globals, PSPtype extends PSP> implem
   }
 
   public void postSpike(PSP p) {
+    // ---
   }
 
   // public void sendBackwards(Spike sp,int postUnit)
@@ -110,9 +111,11 @@ public class Axon<GlobalParams extends Axon.Globals, PSPtype extends PSP> implem
 
   public void setAllWeights(float wval) {
     // w=new float[preLayer.nUnits()][postLayer.nUnits()];
-    for (int i = 0; i < w.length; i++)
-      for (int j = 0; j < w[i].length; j++)
+    for (int i = 0; i < w.length; i++) {
+      for (int j = 0; j < w[i].length; j++) {
         w[i][j] = wval;
+      }
+    }
   }
   // /** Scale thresholds of all units */
   // public void scaleThresholds(float sc)
@@ -138,8 +141,9 @@ public class Axon<GlobalParams extends Axon.Globals, PSPtype extends PSP> implem
   }
 
   void check() {
-    if (w == null || (w.length > 0 && w[0] == null))
+    if ((w == null) || ((w.length > 0) && (w[0] == null))) {
       throw new RuntimeException(getName() + ": Weights are not initialized!  See function \"initWeights\".");
+    }
   }
 
   public static class Factory implements AbstractFactory<Axon> {
@@ -218,8 +222,9 @@ public class Axon<GlobalParams extends Axon.Globals, PSPtype extends PSP> implem
   Controllable controls;
 
   public Controllable getControls() {
-    if (controls == null)
+    if (controls == null) {
       controls = makeController();
+    }
     return controls;
   }
 
@@ -262,8 +267,9 @@ public class Axon<GlobalParams extends Axon.Globals, PSPtype extends PSP> implem
   }
 
   public Reverse getReverseAxon() {
-    if (reverse == null)
+    if (reverse == null) {
       reverse = new Reverse(this);
+    }
     return reverse;
   }
 
@@ -275,7 +281,7 @@ public class Axon<GlobalParams extends Axon.Globals, PSPtype extends PSP> implem
    * post-synaptic in the forward axon can fire to their pre-synaptic units through
    * this axon. This is useful when implementing some kind of symmetrically connected
    * network like a Boltzmann Machine
-   * 
+   *
    * @author Peter */
   public static class Reverse extends Axon {
     Axon forwardAxon;
@@ -304,8 +310,9 @@ public class Axon<GlobalParams extends Axon.Globals, PSPtype extends PSP> implem
     public float[] getWeights(int destinationUnit) { // Get reverse connection weights (THERE HAS GOT TO BE A BETTER WAY)
       float[][] forwardWeights = forwardAxon.w;
       float[] reverseWeightsFromDest = new float[forwardWeights.length];
-      for (int i = 0; i < reverseWeightsFromDest.length; i++)
+      for (int i = 0; i < reverseWeightsFromDest.length; i++) {
         reverseWeightsFromDest[i] = forwardAxon.getOutWeight(i, destinationUnit);
+      }
       return reverseWeightsFromDest;
     }
 

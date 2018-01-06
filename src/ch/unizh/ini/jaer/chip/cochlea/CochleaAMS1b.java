@@ -150,7 +150,7 @@ public class CochleaAMS1b extends CochleaAMSNoBiasgen {
   /** Describes IPots on tmpdiff128 retina chip. These are configured by a shift register as shown here:
    * <p>
    * <img src="doc-files/tmpdiff128biasgen.gif" alt="tmpdiff128 shift register arrangement"/>
-   * 
+   *
    * <p>
    * This bias generator also offers an abstracted ChipControlPanel interface that is used for a simplified user interface.
    *
@@ -424,9 +424,9 @@ public class CochleaAMS1b extends CochleaAMSNoBiasgen {
                                                                                   // this is done by the cypress
           byte[] bytes = new byte[1 + (ipots.getNumPots() * ipots.getPots().get(0).getNumBytes())];
           int ind = 0;
-          Iterator itr = ipots.getShiftRegisterIterator();
+          Iterator<IPot> itr = ipots.getShiftRegisterIterator();
           while (itr.hasNext()) {
-            IPot p = (IPot) itr.next(); // iterates in order of shiftregister index, from Vbpf to VAGC
+            IPot p = itr.next(); // iterates in order of shiftregister index, from Vbpf to VAGC
             byte[] b = p.getBinaryRepresentation();
             System.arraycopy(b, 0, bytes, ind, b.length);
             ind += b.length;
@@ -558,7 +558,7 @@ public class CochleaAMS1b extends CochleaAMSNoBiasgen {
     }
 
     /** Sets the VDACs on the board to be powered or high impedance output. This is a global operation.
-     * 
+     *
      * @param yes true to power up DACs
      * @throws net.sf.jaer.hardwareinterface.HardwareInterfaceException */
     public void setDACPowered(boolean yes) throws HardwareInterfaceException {
@@ -577,7 +577,7 @@ public class CochleaAMS1b extends CochleaAMSNoBiasgen {
     }
 
     /** Returns the DAC powered state
-     * 
+     *
      * @return true if powered up */
     public boolean isDACPowered() {
       return dacPowered;

@@ -12,10 +12,12 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Logger;
@@ -29,6 +31,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 
 import ch.unizh.ini.jaer.chip.cochlea.CochleaAMS1b.Biasgen.BufferIPot;
 import ch.unizh.ini.jaer.chip.cochlea.CochleaAMS1b.Biasgen.ConfigBit;
@@ -48,9 +51,9 @@ public class CochleaAMS1bControlPanel extends javax.swing.JPanel implements Obse
   CochleaAMS1b chip;
   CochleaAMS1b.Biasgen biasgen;
   SpinnerNumberModel scannerChannelSpinnerModel = null, scannerPeriodSpinnerModel = null;
-  HashMap<Equalizer.EqualizerChannel, EqualizerControls> eqMap = new HashMap<Equalizer.EqualizerChannel, EqualizerControls>();
-  HashMap<ConfigBit, AbstractButton> configBitMap = new HashMap<ConfigBit, AbstractButton>();
-  HashMap<TriStateableConfigBit, TristateableConfigBitButtons> tristateableButtonsMap = new HashMap();
+  Map<Equalizer.EqualizerChannel, EqualizerControls> eqMap = new HashMap<>();
+  Map<ConfigBit, AbstractButton> configBitMap = new HashMap<>();
+  Map<TriStateableConfigBit, TristateableConfigBitButtons> tristateableButtonsMap = new HashMap<>();
 
   class TristateableConfigBitButtons {
     JRadioButton zeroOneButton, hiZButton;
@@ -62,7 +65,7 @@ public class CochleaAMS1bControlPanel extends javax.swing.JPanel implements Obse
   }
 
   private void setFileModified() {
-    if (chip != null && chip.getAeViewer() != null && chip.getAeViewer().getBiasgenFrame() != null) {
+    if ((chip != null) && (chip.getAeViewer() != null) && (chip.getAeViewer().getBiasgenFrame() != null)) {
       chip.getAeViewer().getBiasgenFrame().setFileModified(true);
     }
   }
@@ -159,8 +162,9 @@ public class CochleaAMS1bControlPanel extends javax.swing.JPanel implements Obse
     }
     biasgen.equalizer.addObserver(this);
     int prevTab = prefs.getInt("CochleaAMS1bControlPanel.selectedPaneIndex", 0);
-    if (prevTab >= tabbedPane.getTabCount())
+    if (prevTab >= tabbedPane.getTabCount()) {
       prevTab = 0;
+    }
     tabbedPane.setSelectedIndex(prevTab);
   }
 
@@ -272,29 +276,34 @@ public class CochleaAMS1bControlPanel extends javax.swing.JPanel implements Obse
         public void mouseMoved(MouseEvent e) {
         }
 
+        @Override
         public void mouseClicked(MouseEvent e) {
         }
 
+        @Override
         public void mousePressed(MouseEvent e) {
           set(e);
         }
 
+        @Override
         public void mouseReleased(MouseEvent e) {
         }
 
+        @Override
         public void mouseEntered(MouseEvent e) {
           set(e);
         }
 
+        @Override
         public void mouseExited(MouseEvent e) {
         }
 
         void set(MouseEvent e) {
           channelLabel.setText(channel.toString());
-          if ((e.getModifiersEx() & MouseEvent.BUTTON1_DOWN_MASK) == MouseEvent.BUTTON1_DOWN_MASK) {
+          if ((e.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK) == InputEvent.BUTTON1_DOWN_MASK) {
             setSelected(true);
             setFileModified();
-          } else if ((e.getModifiersEx() & MouseEvent.BUTTON3_DOWN_MASK) == MouseEvent.BUTTON3_DOWN_MASK) {
+          } else if ((e.getModifiersEx() & InputEvent.BUTTON3_DOWN_MASK) == InputEvent.BUTTON3_DOWN_MASK) {
             setSelected(false);
             setFileModified();
           }
@@ -315,7 +324,7 @@ public class CochleaAMS1bControlPanel extends javax.swing.JPanel implements Obse
     EqualizerSlider(final CochleaAMS1b.Biasgen.Equalizer.EqualizerChannel channel) {
       super();
       this.channel = channel;
-      setOrientation(JSlider.VERTICAL);
+      setOrientation(SwingConstants.VERTICAL);
       setMaximum(channel.max);
       setMinimum(0);
       setMinimumSize(sliderDimMin);
@@ -329,39 +338,46 @@ public class CochleaAMS1bControlPanel extends javax.swing.JPanel implements Obse
       }
       addChangeListener(channel);
       addMouseListener(new MouseListener() {
+        @Override
         public void mouseClicked(MouseEvent e) {
         }
 
+        @Override
         public void mousePressed(MouseEvent e) {
         }
 
+        @Override
         public void mouseReleased(MouseEvent e) {
         }
 
+        @Override
         public void mouseEntered(MouseEvent e) {
           channelLabel.setText(channel.toString());
-          if ((e.getModifiersEx() & MouseEvent.BUTTON3_DOWN_MASK) == MouseEvent.BUTTON3_DOWN_MASK) {
-            int v = (int) (getMaximum() * (float) (getHeight() - e.getY()) / getHeight());
+          if ((e.getModifiersEx() & InputEvent.BUTTON3_DOWN_MASK) == InputEvent.BUTTON3_DOWN_MASK) {
+            int v = (int) ((getMaximum() * (float) (getHeight() - e.getY())) / getHeight());
             setValue(v);
             setFileModified();
           }
         }
 
+        @Override
         public void mouseExited(MouseEvent e) {
         }
       });
       addMouseMotionListener(new MouseMotionListener() {
+        @Override
         public void mouseDragged(MouseEvent e) {
-          if ((e.getModifiersEx() & MouseEvent.BUTTON1_DOWN_MASK) == MouseEvent.BUTTON1_DOWN_MASK) {
-            int v = (int) (getMaximum() * (float) (getHeight() - e.getY()) / getHeight());
+          if ((e.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK) == InputEvent.BUTTON1_DOWN_MASK) {
+            int v = (int) ((getMaximum() * (float) (getHeight() - e.getY())) / getHeight());
             setValue(v);
             setFileModified();
           }
         }
 
+        @Override
         public void mouseMoved(MouseEvent e) {
-          if ((e.getModifiersEx() & MouseEvent.BUTTON1_DOWN_MASK) == MouseEvent.BUTTON1_DOWN_MASK) {
-            int v = (int) (getMaximum() * (float) (getHeight() - e.getY()) / getHeight());
+          if ((e.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK) == InputEvent.BUTTON1_DOWN_MASK) {
+            int v = (int) ((getMaximum() * (float) (getHeight() - e.getY())) / getHeight());
             setValue(v);
             setFileModified();
           }
@@ -377,6 +393,7 @@ public class CochleaAMS1bControlPanel extends javax.swing.JPanel implements Obse
       this.bit = bit;
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
       AbstractButton button = (AbstractButton) e.getSource();
       bit.setHiZEnabled(button.isSelected()); // TODO fix here
@@ -391,6 +408,7 @@ public class CochleaAMS1bControlPanel extends javax.swing.JPanel implements Obse
       this.bit = bit;
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
       AbstractButton button = (AbstractButton) e.getSource();
       bit.set(button.isSelected());
@@ -441,19 +459,23 @@ public class CochleaAMS1bControlPanel extends javax.swing.JPanel implements Obse
     channelLabel = new javax.swing.JLabel();
     setName("CochleaAMS1bControlPanel"); // NOI18N
     addAncestorListener(new javax.swing.event.AncestorListener() {
+      @Override
       public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
       }
 
+      @Override
       public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
         formAncestorAdded(evt);
       }
 
+      @Override
       public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
       }
     });
     setLayout(new java.awt.BorderLayout());
     tabbedPane.setToolTipText("");
     tabbedPane.addMouseListener(new java.awt.event.MouseAdapter() {
+      @Override
       public void mouseClicked(java.awt.event.MouseEvent evt) {
         tabbedPaneMouseClicked(evt);
       }
@@ -464,6 +486,7 @@ public class CochleaAMS1bControlPanel extends javax.swing.JPanel implements Obse
     jLabel3.setText("Buffer bias");
     bufferBiasPanel.add(jLabel3);
     bufferBiasSlider.addChangeListener(new javax.swing.event.ChangeListener() {
+      @Override
       public void stateChanged(javax.swing.event.ChangeEvent evt) {
         bufferBiasSliderStateChanged(evt);
       }
@@ -489,11 +512,13 @@ public class CochleaAMS1bControlPanel extends javax.swing.JPanel implements Obse
     dacCmdComboBox.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
     dacCmdComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "000000 000000", "ffffff ffffff" }));
     dacCmdComboBox.addItemListener(new java.awt.event.ItemListener() {
+      @Override
       public void itemStateChanged(java.awt.event.ItemEvent evt) {
         dacCmdComboBoxItemStateChanged(evt);
       }
     });
     dacCmdComboBox.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         dacCmdComboBoxActionPerformed(evt);
       }
@@ -507,6 +532,7 @@ public class CochleaAMS1bControlPanel extends javax.swing.JPanel implements Obse
     initDACButton.setText("initDAC()");
     initDACButton.setToolTipText("sends vendor request to initialize DAC to default firmware state");
     initDACButton.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         initDACButtonActionPerformed(evt);
       }
@@ -526,6 +552,7 @@ public class CochleaAMS1bControlPanel extends javax.swing.JPanel implements Obse
     dacPowerButtonGroup.add(dacPoweronButton);
     dacPoweronButton.setText("Power on");
     dacPoweronButton.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         dacPoweronButtonActionPerformed(evt);
       }
@@ -534,6 +561,7 @@ public class CochleaAMS1bControlPanel extends javax.swing.JPanel implements Obse
     dacPowerButtonGroup.add(dacPoweroffButton);
     dacPoweroffButton.setText("Power off");
     dacPoweroffButton.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         dacPoweroffButtonActionPerformed(evt);
       }
@@ -547,6 +575,7 @@ public class CochleaAMS1bControlPanel extends javax.swing.JPanel implements Obse
     specialResetButton.setText("Do special AER reset");
     specialResetButton.setToolTipText("puts  AERKillBit low, toggles Vreset, then raises AEKillBit");
     specialResetButton.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         specialResetButtonActionPerformed(evt);
       }
@@ -562,6 +591,7 @@ public class CochleaAMS1bControlPanel extends javax.swing.JPanel implements Obse
     continuousScanningEnabledCheckBox.setText("Enable continuous scanning");
     continuousScanningEnabledCheckBox.setToolTipText("Turns on scanner to clock continuously");
     continuousScanningEnabledCheckBox.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         continuousScanningEnabledCheckBoxActionPerformed(evt);
         jCheckBox1ActionPerformed(evt);
@@ -569,6 +599,7 @@ public class CochleaAMS1bControlPanel extends javax.swing.JPanel implements Obse
     });
     periodSpinner.setToolTipText("Sets the period as some multiple of a timer interrupt");
     periodSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+      @Override
       public void stateChanged(javax.swing.event.ChangeEvent evt) {
         periodSpinnerStateChanged(evt);
       }
@@ -605,6 +636,7 @@ public class CochleaAMS1bControlPanel extends javax.swing.JPanel implements Obse
     scanSlider.setMaximumSize(new java.awt.Dimension(32767, 40));
     scanSlider.setPreferredSize(new java.awt.Dimension(32767, 47));
     scanSlider.addChangeListener(new javax.swing.event.ChangeListener() {
+      @Override
       public void stateChanged(javax.swing.event.ChangeEvent evt) {
         scanSliderStateChanged(evt);
       }
@@ -614,6 +646,7 @@ public class CochleaAMS1bControlPanel extends javax.swing.JPanel implements Obse
     scanSpinner.setMaximumSize(new java.awt.Dimension(32767, 40));
     scanSpinner.setPreferredSize(new java.awt.Dimension(200, 30));
     scanSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+      @Override
       public void stateChanged(javax.swing.event.ChangeEvent evt) {
         scanSpinnerStateChanged(evt);
       }

@@ -62,6 +62,7 @@ public class AEViewerConsoleOutputFrame extends javax.swing.JFrame {
           try {
             pane.scrollRectToVisible(pane.modelToView(offset));
           } catch (BadLocationException e) {
+            // ---
           }
         } else if (offset < 0) {
           findTF.setForeground(Color.red);
@@ -78,6 +79,7 @@ public class AEViewerConsoleOutputFrame extends javax.swing.JFrame {
           try {
             pane.scrollRectToVisible(pane.modelToView(offset));
           } catch (BadLocationException e) {
+            // ---
           }
         } else if (offset < 0) {
           findTF.setForeground(Color.red);
@@ -114,6 +116,7 @@ public class AEViewerConsoleOutputFrame extends javax.swing.JFrame {
 
       @Override
       public void changedUpdate(DocumentEvent evt) {
+        // ---
       }
     });
     pane.addKeyListener(new java.awt.event.KeyAdapter() {

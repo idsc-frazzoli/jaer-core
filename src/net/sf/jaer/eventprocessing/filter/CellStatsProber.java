@@ -16,6 +16,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -146,7 +147,7 @@ public class CellStatsProber extends EventFilter2D implements FrameAnnotater, Mo
     int sx = chip.getSizeX(), sy = chip.getSizeY();
     Rectangle chipRect = new Rectangle(sx, sy);
     GL2 gl = drawable.getGL().getGL2();
-    if (selection != null && chipRect.intersects(selection)) {
+    if ((selection != null) && chipRect.intersects(selection)) {
       drawSelection(gl, selection, SELECT_COLOR);
     }
     stats.drawStats(drawable);
@@ -166,7 +167,7 @@ public class CellStatsProber extends EventFilter2D implements FrameAnnotater, Mo
   }
 
   private boolean inSelection(BasicEvent e) {
-    if (selection == null || selection.isEmpty() || selection.contains(e.x, e.y)) {
+    if ((selection == null) || selection.isEmpty() || selection.contains(e.x, e.y)) {
       return true;
     }
     return false;
@@ -263,7 +264,7 @@ public class CellStatsProber extends EventFilter2D implements FrameAnnotater, Mo
 
   @Override
   public void mouseReleased(MouseEvent e) {
-    if (freezeSelection || startPoint == null) {
+    if (freezeSelection || (startPoint == null)) {
       return;
     }
     getSelection(e);
@@ -306,7 +307,7 @@ public class CellStatsProber extends EventFilter2D implements FrameAnnotater, Mo
 
   @Override
   public void mouseDragged(MouseEvent e) {
-    if (freezeSelection || startPoint == null) {
+    if (freezeSelection || (startPoint == null)) {
       return;
     }
     getSelection(e);
@@ -493,7 +494,7 @@ public class CellStatsProber extends EventFilter2D implements FrameAnnotater, Mo
     boolean initialized = false;
     float instantaneousRate = 0, filteredRatePerPixel = 0;
     int count = 0; // last update event count
-    private HashMap<Integer, ISIHist> histMap = new HashMap();
+    private Map<Integer, ISIHist> histMap = new HashMap<>();
     ISIHist globalHist = new ISIHist(-1);
     ISIHist[] averageTypeHistograms = null;
     private int nPixels = 0;
@@ -534,7 +535,7 @@ public class CellStatsProber extends EventFilter2D implements FrameAnnotater, Mo
           }
           globalHist.lastT = e.timestamp;
           if (countDVSEventsBetweenExternalPinEvents) {
-            eventCountAfterExternalPinEvents.addEvent((PolarityEvent) e); // TODO check if counting APS events
+            eventCountAfterExternalPinEvents.addEvent(e); // TODO check if counting APS events
           }
         }
       }
@@ -1026,17 +1027,17 @@ public class CellStatsProber extends EventFilter2D implements FrameAnnotater, Mo
       void addEvent(BasicEvent b) {
         PolarityEvent e = (PolarityEvent) b; // TODO assumes DVS polarity event
         lastTimestamp = b.timestamp;
-        if (highPeriod > 0 && lowPeriod > 0) { // if we've already detected a low and high period on sync
+        if ((highPeriod > 0) && (lowPeriod > 0)) { // if we've already detected a low and high period on sync
           int dtfalling = lastTimestamp - lastFallingTimestamp, dtrising = lastTimestamp - lastRisingTimstamp;
-          if (dtfalling > 0 && dtrising > 0) { // we're after both edges
+          if ((dtfalling > 0) && (dtrising > 0)) { // we're after both edges
             if (dtfalling < dtrising) { // last edge falling
-              if (dtfalling <= lowPeriod / 2) {
+              if (dtfalling <= (lowPeriod / 2)) {
                 setPhase(Phase.Falling);
               } else {
                 setPhase(Phase.Rising);
               }
             } else { // last edge rising
-              if (dtrising <= highPeriod / 2) {
+              if (dtrising <= (highPeriod / 2)) {
                 setPhase(Phase.Rising);
               } else {
                 setPhase(Phase.Falling);
@@ -1069,7 +1070,7 @@ public class CellStatsProber extends EventFilter2D implements FrameAnnotater, Mo
           }
           return;
         }
-        if (e.isFilteredOut() || !inSelection(e) || phase == Phase.Uninitalized) {
+        if (e.isFilteredOut() || !inSelection(e) || (phase == Phase.Uninitalized)) {
           return;
         }
         switch (e.polarity) {
@@ -1124,8 +1125,9 @@ public class CellStatsProber extends EventFilter2D implements FrameAnnotater, Mo
       }
 
       void maybeSetRendererAccumulation() {
-        if (chip.getRenderer() == null)
+        if (chip.getRenderer() == null) {
           return;
+        }
         AEChipRenderer renderer = chip.getRenderer();
         if (!accumulateEventsOnEachPhase) {
           renderer.setAccumulateEnabled(false);

@@ -13,6 +13,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -87,7 +88,7 @@ public class ListClasses {
             ? loadClassesFromDir(null, classpathElement, classpathElement)
             : loadClassesFromJar(classpathElement));
       }
-      HashSet<String> hash = new HashSet(classNames); // store only unique
+      Set<String> hash = new HashSet<>(classNames); // store only unique
       classNames = new ArrayList<>(hash);
       log.info("found " + classNames.size() + " classes in " + classpath);
     } catch (Exception e) {

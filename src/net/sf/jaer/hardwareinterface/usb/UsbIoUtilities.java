@@ -14,6 +14,7 @@ package net.sf.jaer.hardwareinterface.usb;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import de.thesycon.usbio.PnPNotify;
@@ -25,7 +26,7 @@ import net.sf.jaer.util.WarningDialogWithDontShowPreference;
 /** Static methods and flags for USBIO to help build code that will run on non-windows platforms even though Thesycon USBIO
  * package will not run there. Also includes a static method for registering a PnPNotify listener to work around
  * the problem that only a single listener can be registered for each GUID in the Thesycon native interface or driver.
- * 
+ *
  * @author tobi */
 public class UsbIoUtilities {
   static final Logger log = Logger.getLogger("USBIO");
@@ -68,7 +69,7 @@ public class UsbIoUtilities {
     }
   }
   // mapping from GUID to MyPnPListener
-  private static HashMap<String, MyPnPListener> listenerMap = new HashMap();
+  private static Map<String, MyPnPListener> listenerMap = new HashMap<>();
 
   // has list of listeners to be called on notification
   private static class MyPnPListener extends ArrayList<PnPNotifyInterface> implements PnPNotifyInterface {
@@ -105,7 +106,7 @@ public class UsbIoUtilities {
   }
 
   /** Enables PnP notifications for Thesycon USBIO add/remove notifications
-   * 
+   *
    * @param listener a listener for PnP events
    * @param GUID the GUID to listen for. */
   synchronized public static void enablePnPNotification(final PnPNotifyInterface listener, final String GUID) {
@@ -121,7 +122,7 @@ public class UsbIoUtilities {
   }
 
   /** Disables PnP notifications for Thesycon USBIO add/remove notifications
-   * 
+   *
    * @param listener a listener for PnP events
    * @param GUID the GUID to listen for. */
   synchronized public static void disablePnPNotification(PnPNotifyInterface listener, String GUID) {

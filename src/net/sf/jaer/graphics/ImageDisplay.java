@@ -811,7 +811,7 @@ public class ImageDisplay extends GLJPanel implements GLEventListener {
    * @param tickLabel */
   synchronized public void addXTick(int location, String tickLabel) {
     if (xticks == null) {
-      xticks = new HashMap();
+      xticks = new HashMap<>();
     }
     xticks.put(location, tickLabel);
   }
@@ -827,7 +827,7 @@ public class ImageDisplay extends GLJPanel implements GLEventListener {
    * @param tickLabel */
   synchronized public void addYTick(int location, String tickLabel) {
     if (yticks == null) {
-      yticks = new HashMap();
+      yticks = new HashMap<>();
     }
     yticks.put(location, tickLabel);
   }

@@ -99,10 +99,12 @@ public class AbstractAviWriter extends EventFilter2DMouseAdaptor implements Fram
 
   @Override
   public void resetFilter() {
+    // ---
   }
 
   @Override
   public void initFilter() {
+    // ---
   }
 
   public void doResizeWindowTo4To3Format() {
@@ -275,6 +277,7 @@ public class AbstractAviWriter extends EventFilter2DMouseAdaptor implements Fram
 
   @Override
   public void annotate(GLAutoDrawable drawable) {
+    // ---
   }
 
   /** Turns gl to BufferedImage with fixed format
@@ -286,7 +289,7 @@ public class AbstractAviWriter extends EventFilter2DMouseAdaptor implements Fram
   protected BufferedImage toImage(GL2 gl, int w, int h) {
     gl.glReadBuffer(GL.GL_FRONT); // or GL.GL_BACK
     ByteBuffer glBB = Buffers.newDirectByteBuffer(4 * w * h);
-    gl.glReadPixels(0, 0, w, h, GL2.GL_BGRA, GL.GL_BYTE, glBB);
+    gl.glReadPixels(0, 0, w, h, GL.GL_BGRA, GL.GL_BYTE, glBB);
     BufferedImage bi = new BufferedImage(w, h, BufferedImage.TYPE_INT_BGR);
     int[] bd = ((DataBufferInt) bi.getRaster().getDataBuffer()).getData();
     for (int y = 0; y < h; y++) {
@@ -295,7 +298,7 @@ public class AbstractAviWriter extends EventFilter2DMouseAdaptor implements Fram
         int g = 2 * glBB.get();
         int r = 2 * glBB.get();
         int a = glBB.get(); // not using
-        bd[(h - y - 1) * w + x] = (b << 16) | (g << 8) | r | 0xFF000000;
+        bd[((h - y - 1) * w) + x] = (b << 16) | (g << 8) | r | 0xFF000000;
       }
     }
     return bi;
@@ -308,11 +311,11 @@ public class AbstractAviWriter extends EventFilter2DMouseAdaptor implements Fram
   }
 
   protected void incrementFramecountAndMaybeCloseOutput() {
-    if (++framesWritten % LOG_EVERY_THIS_MANY_FRAMES == 0) {
+    if ((++framesWritten % LOG_EVERY_THIS_MANY_FRAMES) == 0) {
       log.info(String.format("wrote %d frames", framesWritten));
     }
     getSupport().firePropertyChange("framesWritten", null, framesWritten);
-    if (maxFrames > 0 && framesWritten >= maxFrames) {
+    if ((maxFrames > 0) && (framesWritten >= maxFrames)) {
       log.info("wrote maxFrames=" + maxFrames + " frames; closing AVI file");
       doCloseFile();
     }
@@ -371,7 +374,7 @@ public class AbstractAviWriter extends EventFilter2DMouseAdaptor implements Fram
 
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
-    if (closeOnRewind && evt.getPropertyName() == AEInputStream.EVENT_REWIND) {
+    if (closeOnRewind && (evt.getPropertyName() == AEInputStream.EVENT_REWIND)) {
       doCloseFile();
     }
   }
@@ -395,8 +398,9 @@ public class AbstractAviWriter extends EventFilter2DMouseAdaptor implements Fram
 
   /** @param frameRate the frameRate to set */
   public void setFrameRate(int frameRate) {
-    if (frameRate < 1)
+    if (frameRate < 1) {
       frameRate = 1;
+    }
     this.frameRate = frameRate;
     putInt("frameRate", frameRate);
   }
@@ -428,14 +432,16 @@ public class AbstractAviWriter extends EventFilter2DMouseAdaptor implements Fram
 
   @Override
   public void mouseReleased(MouseEvent e) {
-    if (writeOnlyWhenMousePressed)
+    if (writeOnlyWhenMousePressed) {
       setWriteEnabled(false);
+    }
   }
 
   @Override
   public void mousePressed(MouseEvent e) {
-    if (writeOnlyWhenMousePressed)
+    if (writeOnlyWhenMousePressed) {
       setWriteEnabled(true);
+    }
   }
 
   public boolean isWriteEnabled() {

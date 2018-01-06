@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Random;
@@ -2517,7 +2518,7 @@ public class RectangularClusterTracker extends EventFilter2D
     /** How much the map is subsampled in bits relative to the pixel array */
     final int SUBSAMPLE_BY = 2;
     private Cluster[][] grid = null;
-    private HashMap<Cluster, Point> map = new HashMap();
+    private Map<Cluster, Point> map = new HashMap<>();
     int nx = 0, ny = 0;
 
     void init() {

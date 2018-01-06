@@ -14,6 +14,7 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
@@ -52,11 +53,11 @@ public class WindowSaver implements AWTEventListener {
   public final int WINDOWS_TASK_BAR_HEIGHT = 100;
   /** Offset from last window with same name. */
   public final int OFFSET_FROM_SAME = 20;
-  private HashMap<String, Integer> lastframemap = new HashMap();
+  private Map<String, Integer> lastframemap = new HashMap<>();
   /** Default width and height values. Width and height are not set for a
    * window unless preferences are saved */
   public final int DEFAULT_WIDTH = 500, DEFAULT_HEIGHT = 500;
-  private HashMap<String, JFrame> framemap = new HashMap(); // this hashmap maps from windows to settings
+  private Map<String, JFrame> framemap = new HashMap<>(); // this hashmap maps from windows to settings
   private int lowerInset = WINDOWS_TASK_BAR_HEIGHT; // filled in from windows screen inset
 
   /** Creates a new instance of WindowSaver.
@@ -102,7 +103,7 @@ public class WindowSaver implements AWTEventListener {
     int y = preferences.getInt(name + ".y", 0); // UL corner
     int w = preferences.getInt(name + ".w", DEFAULT_WIDTH);
     int h = preferences.getInt(name + ".h", DEFAULT_HEIGHT);
-    if (w != DEFAULT_WIDTH | h != DEFAULT_HEIGHT) {
+    if ((w != DEFAULT_WIDTH) | (h != DEFAULT_HEIGHT)) {
       resize = true;
     }
     Dimension sd = Toolkit.getDefaultToolkit().getScreenSize();
@@ -150,12 +151,12 @@ public class WindowSaver implements AWTEventListener {
       log.info("window y origin is < lowerInset, moving back to " + 0);
       y = 0;
     }
-    if (x + w > sd.width || y + h > sd.height) {
+    if (((x + w) > sd.width) || ((y + h) > sd.height)) {
       log.info("window extends over edge of screen, moving back to UL origin");
       x = 0;
       y = 0;
     }
-    if (h > sd.height - lowerInset) {
+    if (h > (sd.height - lowerInset)) {
       log.info("window height (" + h + ") is bigger than screen height minus WINDOWS_TASK_BAR_HEIGHT (" + (sd.height - WINDOWS_TASK_BAR_HEIGHT)
           + "), resizing height");
       h = sd.height - lowerInset;
@@ -178,6 +179,7 @@ public class WindowSaver implements AWTEventListener {
     final boolean resize2 = resize;
     final int w2 = w, h2 = h, x2 = x, y2 = y;
     SwingUtilities.invokeLater(new Runnable() {
+      @Override
       public void run() {
         if (resize2 && !(frame instanceof DontResize)) {
           frame.setSize(new Dimension(w2, h2));
@@ -210,7 +212,7 @@ public class WindowSaver implements AWTEventListener {
     Iterator it = framemap.keySet().iterator();
     while (it.hasNext()) {
       String name = (String) it.next();
-      JFrame frame = (JFrame) framemap.get(name);
+      JFrame frame = framemap.get(name);
       preferences.putInt(name + ".x", frame.getX());
       sb.append(name + ".x=" + frame.getX() + " ");
       preferences.putInt(name + ".y", frame.getY());

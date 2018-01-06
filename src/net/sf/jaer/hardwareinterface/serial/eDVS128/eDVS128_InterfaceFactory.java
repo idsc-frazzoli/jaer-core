@@ -13,7 +13,6 @@ import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -21,6 +20,7 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
@@ -90,6 +90,7 @@ public class eDVS128_InterfaceFactory extends javax.swing.JDialog implements Har
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), cancelName);
     ActionMap actionMap = getRootPane().getActionMap();
     actionMap.put(cancelName, new AbstractAction() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         doCloseCancel();
       }
@@ -125,7 +126,7 @@ public class eDVS128_InterfaceFactory extends javax.swing.JDialog implements Har
     focusLast();
   }
 
-  private HashMap<String, HardwareInterface> closemap = new HashMap();
+  private Map<String, HardwareInterface> closemap = new HashMap<>();
 
   private void closePrevious(String s) {
     HardwareInterface hardwareInterface = closemap.get(s);
@@ -174,7 +175,7 @@ public class eDVS128_InterfaceFactory extends javax.swing.JDialog implements Har
   @Override
   public JDialog getInterfaceChooser(AEChip chip) {
     setTitle("Choose interface for " + chip);
-    if (chip != null && chip.getAeViewer() != null) {
+    if ((chip != null) && (chip.getAeViewer() != null)) {
       setLocationRelativeTo(chip.getAeViewer());
     }
     return this;
@@ -216,12 +217,14 @@ public class eDVS128_InterfaceFactory extends javax.swing.JDialog implements Har
     pingButton = new javax.swing.JButton();
     setTitle("Serial Port Chooser");
     addWindowListener(new java.awt.event.WindowAdapter() {
+      @Override
       public void windowClosing(java.awt.event.WindowEvent evt) {
         closeDialog(evt);
       }
     });
     cancelButton.setText("Cancel");
     cancelButton.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         cancelButtonActionPerformed(evt);
       }
@@ -230,6 +233,7 @@ public class eDVS128_InterfaceFactory extends javax.swing.JDialog implements Har
     portCB.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
     portCB.setToolTipText("The COM port. Select -rescan- to scan for COM ports.");
     portCB.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         portCBActionPerformed(evt);
       }
@@ -237,6 +241,7 @@ public class eDVS128_InterfaceFactory extends javax.swing.JDialog implements Har
     okSerPortButton.setText("Open serial port interface");
     okSerPortButton.setToolTipText("Tries to open the serial port");
     okSerPortButton.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         okSerPortButtonActionPerformed(evt);
       }
@@ -245,6 +250,7 @@ public class eDVS128_InterfaceFactory extends javax.swing.JDialog implements Har
         "<html>If you are using the USB interface, then the eDVS will appear on a COM port. <p>Choose the serial port of the eDVS.<br>It is usually the <b> lower numbered port</b> of a large numbered pair of ports.");
     refreshPortListButton.setText("Refresh port list");
     refreshPortListButton.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         refreshPortListButtonActionPerformed(evt);
       }
@@ -252,6 +258,7 @@ public class eDVS128_InterfaceFactory extends javax.swing.JDialog implements Har
     baudRateCB.setToolTipText(
         "<html>Sets the serial port baud rate in megabauds. <p>Note that the eDVS must be separately configured to set this baud rate over a serial port console link. <p>The default baud rate is 4 Mbaud.");
     baudRateCB.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         baudRateCBActionPerformed(evt);
       }
@@ -260,6 +267,7 @@ public class eDVS128_InterfaceFactory extends javax.swing.JDialog implements Har
     closeButton.setText("Close");
     closeButton.setToolTipText("Closes the selected serial port.");
     closeButton.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         closeButtonActionPerformed(evt);
       }
@@ -305,6 +313,7 @@ public class eDVS128_InterfaceFactory extends javax.swing.JDialog implements Har
     okSocketButton.setText("Open network interface");
     okSocketButton.setToolTipText("Tries to open the TCP socket. ");
     okSocketButton.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         okSocketButtonActionPerformed(evt);
       }
@@ -314,6 +323,7 @@ public class eDVS128_InterfaceFactory extends javax.swing.JDialog implements Har
     defaultsButton.setText("Defaults");
     defaultsButton.setToolTipText("Enters default values");
     defaultsButton.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         defaultsButtonActionPerformed(evt);
       }
@@ -321,6 +331,7 @@ public class eDVS128_InterfaceFactory extends javax.swing.JDialog implements Har
     pingButton.setText("Ping");
     pingButton.setToolTipText("Ping this host to see if it is there");
     pingButton.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         pingButtonActionPerformed(evt);
       }
@@ -416,7 +427,7 @@ public class eDVS128_InterfaceFactory extends javax.swing.JDialog implements Har
     String host = hostTF.getText();
     try {
       setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-      InetAddress adr = Inet4Address.getByName(host);
+      InetAddress adr = InetAddress.getByName(host);
       try {
         adr.isReachable(3000);
         JOptionPane.showMessageDialog(this, host + " is reachable. However it may not be the eDVS!");
@@ -487,6 +498,7 @@ public class eDVS128_InterfaceFactory extends javax.swing.JDialog implements Har
           log.warning("requested receiveBufferSize=" + TCP_RECEIVE_BUFFER_SIZE_BYTES + " but got receiveBufferSize=" + socket.getReceiveBufferSize());
         }
         Runtime.getRuntime().addShutdownHook(new Thread() {
+          @Override
           public void run() {
             log.info("closing " + socket);
             try {
@@ -531,7 +543,7 @@ public class eDVS128_InterfaceFactory extends javax.swing.JDialog implements Har
       // make interface based on chosen serial port
       setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
       Object o = portCB.getSelectedItem();
-      if (o == null || !(o instanceof String)) {
+      if ((o == null) || !(o instanceof String)) {
         log.warning("Selected item " + o + " is not a String, can't use it to make eDVS128_HardwareInterface");
       } else {
         String serialPortName = (String) o;
@@ -554,7 +566,7 @@ public class eDVS128_InterfaceFactory extends javax.swing.JDialog implements Har
               serialPort = (SerialPort) commPort;
               serialPort.setSerialPortParams(serialBaudRateMbps * 1000000, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
               serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN);
-              serialPort.setFlowControlMode(serialPort.FLOWCONTROL_RTSCTS_OUT);
+              serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_OUT);
               chosenInterface = new eDVS128_HardwareInterface(serialPort.getInputStream(), serialPort.getOutputStream(), serialPort, null);
               closemap.put(serialPortName, chosenInterface);
               // portIdentifier.addPortOwnershipListener((eDVS128_HardwareInterface)chosenInterface); // doesn't work because port ownership change nofication
@@ -623,7 +635,7 @@ public class eDVS128_InterfaceFactory extends javax.swing.JDialog implements Har
     CommPortIdentifier portId;
     Enumeration<CommPortIdentifier> portList = CommPortIdentifier.getPortIdentifiers();
     while (portList.hasMoreElements()) {
-      portId = (CommPortIdentifier) portList.nextElement();
+      portId = portList.nextElement();
       if (portId.getPortType() == CommPortIdentifier.PORT_SERIAL) {
         portCB.addItem(portId.getName());
       }

@@ -7,6 +7,7 @@ package eu.seebetter.ini.chips.davis;
 import java.awt.Font;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
@@ -46,7 +47,7 @@ public class DavisAutoShooter extends EventFilter2D implements FrameAnnotater {
   private boolean useEventRateThreshold = getBoolean("useEventRateThreshold", true);
   private int trackerMovementPixelsForNewFrame = getInt("trackerMovementPixelsForNewFrame", 5);
   private boolean shootFramesWhenDVSEventRateBelowThreshold = getBoolean("shootFramesWhenDVSEventRateBelowThreshold", false);
-  private final HashMap<Cluster, Cluster> oldClusters = new HashMap();
+  private final Map<Cluster, Cluster> oldClusters = new HashMap<>();
 
   public DavisAutoShooter(final AEChip chip) {
     super(chip);

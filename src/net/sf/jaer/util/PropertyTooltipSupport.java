@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 /** Provides support for adding tooltips to object properties.
- * 
+ *
  * @author Tobi */
 public class PropertyTooltipSupport implements HasPropertyTooltips {
   /** The key,value table of property tooltip strings. */
@@ -65,15 +65,15 @@ public class PropertyTooltipSupport implements HasPropertyTooltips {
   }
 
   /** Adds a property to a group, creating the group if needed.
-   * 
+   *
    * @param groupName a named parameter group.
    * @param propertyName the property name. */
   public void addPropertyToGroup(String groupName, String propertyName) {
     if (property2GroupMap == null) {
-      property2GroupMap = new HashMap();
+      property2GroupMap = new HashMap<>();
     }
     if (group2PropertyListMap == null) {
-      group2PropertyListMap = new HashMap();
+      group2PropertyListMap = new HashMap<>();
     }
     // add the mapping from property to group
     property2GroupMap.put(propertyName.toLowerCase(), groupName);
@@ -111,7 +111,7 @@ public class PropertyTooltipSupport implements HasPropertyTooltips {
   }
 
   /** Returns the set of property groups.
-   * 
+   *
    * @return Set view of property groups. */
   public Set<String> getPropertyGroupSet() {
     if (group2PropertyListMap == null) {
@@ -122,7 +122,7 @@ public class PropertyTooltipSupport implements HasPropertyTooltips {
 
   /** Returns the mapping from property name to group name.
    * If null, no groups have been declared.
-   * 
+   *
    * @return the map, or null if no groups have been declared by adding any properties.
    * @see #property2GroupMap */
   public HashMap<String, String> getPropertyGroupMap() {

@@ -1728,6 +1728,7 @@ public class AEViewer extends javax.swing.JFrame implements PropertyChangeListen
           Thread.sleep(1000); // sleep to let components realize on screen - may be crashing opengl on nvidia
           // drivers if we draw to unrealized components
         } catch (InterruptedException e) {
+          // ---
         }
       }
       while (stop == false/* && !isInterrupted() */) { // the only way to break out of the run loop is either
@@ -2049,6 +2050,7 @@ public class AEViewer extends javax.swing.JFrame implements PropertyChangeListen
                 try {
                   Thread.sleep(1000);
                 } catch (InterruptedException ex2) {
+                  // ---
                 }
               }
             }
@@ -2243,6 +2245,7 @@ public class AEViewer extends javax.swing.JFrame implements PropertyChangeListen
               try {
                 Thread.sleep(1000);
               } catch (InterruptedException ex2) {
+                // ---
               }
             }
           }
@@ -2552,6 +2555,7 @@ public class AEViewer extends javax.swing.JFrame implements PropertyChangeListen
         }
         setStatusColor(Color.DARK_GRAY);
       } catch (InterruptedException e) {
+        // ---
       }
     }
   }
@@ -2727,6 +2731,7 @@ public class AEViewer extends javax.swing.JFrame implements PropertyChangeListen
       try {
         Thread.sleep(delayMs);
       } catch (java.lang.InterruptedException e) {
+        // ---
       }
     }
   }
@@ -3602,10 +3607,12 @@ public class AEViewer extends javax.swing.JFrame implements PropertyChangeListen
     interfaceMenu.addMenuListener(new javax.swing.event.MenuListener() {
       @Override
       public void menuCanceled(javax.swing.event.MenuEvent evt) {
+        // ---
       }
 
       @Override
       public void menuDeselected(javax.swing.event.MenuEvent evt) {
+        // ---
       }
 
       @Override

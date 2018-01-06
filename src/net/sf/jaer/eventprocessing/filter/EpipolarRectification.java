@@ -3,9 +3,9 @@
  *
  * Created on June 13, 2008, 12:33 PM
  *
- * This filter apply the epipolar correction (previously computed using matlab or other tools) 
- * to one retina only here (epipolar correction is appply to two retinas used in stereo 
- * but slightly angled toward each other) so that pixel at the same height appears 
+ * This filter apply the epipolar correction (previously computed using matlab or other tools)
+ * to one retina only here (epipolar correction is appply to two retinas used in stereo
+ * but slightly angled toward each other) so that pixel at the same height appears
  * on the same y line)
  * One must select which retina to correct, left or non left
  * (should be easily adapted to any configuration)
@@ -79,6 +79,7 @@ public class EpipolarRectification extends EventFilter2D implements Observer {
    * than the number putString in
    * @param in input events can be null or empty.
    * @return the processed events, may be fewer in number. filtering may occur in place in the in packet. */
+  @Override
   synchronized public EventPacket filterPacket(EventPacket in) {
     if (!filterEnabled) {
       return in;
@@ -129,15 +130,15 @@ public class EpipolarRectification extends EventFilter2D implements Observer {
 
   // getString the new x,y location for an incoming event
   private boolean canCorrectIndex(BinocularEvent evin) {
-    int ind = (evin.x) * y_size + (y_size - evin.y);
+    int ind = ((evin.x) * y_size) + (y_size - evin.y);
     Integer newInd = (Integer) indexLookup.get(new Integer(ind));
     if (newInd == null) {
       // System.out.println ("correctIndex: error, newInd: x "+newInd);
       return false;
     }
     int newx = Math.abs(newInd.intValue() / y_size);
-    int newy = newInd.intValue() - newx * y_size;
-    if (newx >= x_size || newy >= y_size) {
+    int newy = newInd.intValue() - (newx * y_size);
+    if ((newx >= x_size) || (newy >= y_size)) {
       System.out.println("correctIndex: error, over size: x " + newx + " y " + newy + "newInd " + newInd.intValue());
       return false;
     }
@@ -146,7 +147,7 @@ public class EpipolarRectification extends EventFilter2D implements Observer {
 
   // getString the new x,y location for an incoming event
   private boolean correctIndex(BinocularEvent evin, BinocularEvent evout) {
-    int ind = (evin.x) * y_size + (y_size - evin.y);
+    int ind = ((evin.x) * y_size) + (y_size - evin.y);
     Integer newInd = (Integer) indexLookup.get(new Integer(ind));
     if (newInd == null) {
       // System.out.println ("correctIndex: error, newInd: x "+newInd);
@@ -154,8 +155,8 @@ public class EpipolarRectification extends EventFilter2D implements Observer {
       return false;
     }
     int newx = Math.abs(newInd.intValue() / y_size);
-    int newy = newInd.intValue() - newx * y_size;
-    if (newx >= x_size || newy >= y_size) {
+    int newy = newInd.intValue() - (newx * y_size);
+    if ((newx >= x_size) || (newy >= y_size)) {
       System.out.println("correctIndex: error, over size: x " + newx + " y " + newy + "newInd " + newInd.intValue());
       evout = null;
       return false;
@@ -163,7 +164,7 @@ public class EpipolarRectification extends EventFilter2D implements Observer {
     // evout.copyFrom(evin);
     evout.x = (short) (newx);
     evout.y = (short) (y_size - 1 - newy);
-    if (evout.y < 0 || evout.y >= y_size) {
+    if ((evout.y < 0) || (evout.y >= y_size)) {
       System.out.println("correctIndex: error, over size: x " + newx + " y " + newy + "newInd " + newInd.intValue());
       evout = null;
       return false;
@@ -215,7 +216,7 @@ public class EpipolarRectification extends EventFilter2D implements Observer {
   private void addToIndexesLookup(String oldIndexFileName, String newIndexFileName) {
     int[] old_ind = readIndexesFromTextFile(oldIndexFileName);
     int[] new_ind = readIndexesFromTextFile(newIndexFileName);
-    if (old_ind == null || new_ind == null) {
+    if ((old_ind == null) || (new_ind == null)) {
       System.out.println("addToIndexesLookup: file " + oldIndexFileName + " error, null array: " + old_ind + " " + new_ind);
       return;
     }
@@ -240,9 +241,10 @@ public class EpipolarRectification extends EventFilter2D implements Observer {
   // load index file, where x,y pixel location is coded the Matlab way
   private int[] readIndexesFromTextFile(String filename) {
     File file = new File(filename);
-    if (file == null || !file.exists()) {
-      if (logLoudly)
+    if ((file == null) || !file.exists()) {
+      if (logLoudly) {
         System.out.println("readIndexesFromTextFile: couldn't read: " + filename);
+      }
       return null;
     }
     // Count the number of lines with the string of interest.
@@ -255,8 +257,9 @@ public class EpipolarRectification extends EventFilter2D implements Observer {
       // Read each line of the file and look for the string of interest.
       do {
         String line = buf_reader.readLine();
-        if (line == null)
+        if (line == null) {
           break;
+        }
         res[i] = Integer.parseInt(line);
         i++;
       } while (true);
@@ -271,16 +274,19 @@ public class EpipolarRectification extends EventFilter2D implements Observer {
     return null;
   }
 
+  @Override
   synchronized public void resetFilter() {
     // System.out.println ("EpipolarRectification resetFilter ");
     // resetIndexesLookup();
   }
 
+  @Override
   public void update(Observable o, Object arg) {
     // if(!isFilterEnabled()) return;
     initFilter();
   }
 
+  @Override
   public void initFilter() {
   }
 

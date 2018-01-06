@@ -329,6 +329,7 @@ public class JAERViewer {
 
     @Override
     public void flush() {
+      // ---
     }
   }
 

@@ -29,6 +29,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
@@ -163,9 +164,9 @@ public class ControlPanel extends javax.swing.JPanel implements PropertyChangeLi
   final float fontSize = 10f;
   private Border normalBorder, redLineBorder;
   private TitledBorder titledBorder;
-  private HashMap<String, HasSetter> setterMap = new HashMap<String, HasSetter>(); // map from filter to property, to apply property change events to control
-  protected java.util.ArrayList<JComponent> controls = new ArrayList<JComponent>();
-  private HashMap<String, Container> groupContainerMap = new HashMap();
+  private Map<String, HasSetter> setterMap = new HashMap<>(); // map from filter to property, to apply property change events to control
+  protected List<JComponent> controls = new ArrayList<>();
+  private Map<String, Container> groupContainerMap = new HashMap<>();
   private JPanel inheritedPanel = null;
   private float DEFAULT_REAL_VALUE = 0.01f; // value jumped to from zero on key or wheel up
   Controllable controllable;

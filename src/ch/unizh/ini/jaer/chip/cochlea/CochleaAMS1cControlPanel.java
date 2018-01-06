@@ -12,10 +12,12 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Logger;
@@ -31,6 +33,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 
 import ch.unizh.ini.jaer.chip.cochlea.CochleaAMS1c.Biasgen.AbstractConfigValue;
 import ch.unizh.ini.jaer.chip.cochlea.CochleaAMS1c.Biasgen.BufferIPot;
@@ -55,9 +58,9 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
   CochleaAMS1c chip;
   private CochleaAMS1c.Biasgen biasgen;
   SpinnerNumberModel scannerChannelSpinnerModel = null, scannerPeriodSpinnerModel = null;
-  HashMap<Equalizer.EqualizerChannel, EqualizerControls> eqMap = new HashMap<Equalizer.EqualizerChannel, EqualizerControls>();
-  HashMap<AbstractConfigValue, JComponent> configBitMap = new HashMap<AbstractConfigValue, JComponent>();
-  HashMap<ConfigTristate, TristateableConfigBitButtons> tristateableButtonsMap = new HashMap();
+  Map<Equalizer.EqualizerChannel, EqualizerControls> eqMap = new HashMap<>();
+  Map<AbstractConfigValue, JComponent> configBitMap = new HashMap<>();
+  Map<ConfigTristate, TristateableConfigBitButtons> tristateableButtonsMap = new HashMap<>();
   Scanner scanner = null;
   ADCHardwareInterfaceProxy adcProxy = null;
 
@@ -208,8 +211,8 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
 
   // sets the selected channel to be displayed in the DisplayMethod to guide user for Equalizer channel selection
   private void setSelectedChannel(int channel) {
-    if (chip != null && chip.getCanvas() != null && chip.getCanvas().getDisplayMethod() != null
-        && chip.getCanvas().getDisplayMethod() instanceof HasSelectedCochleaChannel) {
+    if ((chip != null) && (chip.getCanvas() != null) && (chip.getCanvas().getDisplayMethod() != null)
+        && (chip.getCanvas().getDisplayMethod() instanceof HasSelectedCochleaChannel)) {
       ((HasSelectedCochleaChannel) chip.getCanvas().getDisplayMethod()).setSelectedChannel(channel);
     }
   }
@@ -253,7 +256,7 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
   }
 
   private void setFileModified() {
-    if (chip != null && chip.getAeViewer() != null && chip.getAeViewer().getBiasgenFrame() != null) {
+    if ((chip != null) && (chip.getAeViewer() != null) && (chip.getAeViewer().getBiasgenFrame() != null)) {
       chip.getAeViewer().getBiasgenFrame().setFileModified(true);
     }
   }
@@ -460,10 +463,10 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
         void set(MouseEvent e) {
           setSelectedChannel(channel.channel);
           channelLabel.setText(channel.toString());
-          if ((e.getModifiersEx() & MouseEvent.BUTTON1_DOWN_MASK) == MouseEvent.BUTTON1_DOWN_MASK) {
+          if ((e.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK) == InputEvent.BUTTON1_DOWN_MASK) {
             setSelected(true);
             setFileModified();
-          } else if ((e.getModifiersEx() & MouseEvent.BUTTON3_DOWN_MASK) == MouseEvent.BUTTON3_DOWN_MASK) {
+          } else if ((e.getModifiersEx() & InputEvent.BUTTON3_DOWN_MASK) == InputEvent.BUTTON3_DOWN_MASK) {
             setSelected(false);
             setFileModified();
           }
@@ -484,7 +487,7 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
     EqualizerSlider(final CochleaAMS1c.Biasgen.Equalizer.EqualizerChannel channel) {
       super();
       this.channel = channel;
-      setOrientation(JSlider.VERTICAL);
+      setOrientation(SwingConstants.VERTICAL);
       setMaximum(channel.max);
       setMinimum(0);
       setMinimumSize(sliderDimMin);
@@ -514,8 +517,8 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
         public void mouseEntered(MouseEvent e) {
           setSelectedChannel(channel.channel);
           channelLabel.setText(channel.toString());
-          if ((e.getModifiersEx() & MouseEvent.BUTTON3_DOWN_MASK) == MouseEvent.BUTTON3_DOWN_MASK) {
-            int v = (int) (getMaximum() * (float) (getHeight() - e.getY()) / getHeight());
+          if ((e.getModifiersEx() & InputEvent.BUTTON3_DOWN_MASK) == InputEvent.BUTTON3_DOWN_MASK) {
+            int v = (int) ((getMaximum() * (float) (getHeight() - e.getY())) / getHeight());
             setValue(v);
             setFileModified();
           }
@@ -530,8 +533,8 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
         @Override
         public void mouseDragged(MouseEvent e) {
           // System.out.println("dragged ");
-          if ((e.getModifiersEx() & MouseEvent.BUTTON1_DOWN_MASK) == MouseEvent.BUTTON1_DOWN_MASK) {
-            int v = (int) (getMaximum() * (float) (getHeight() - e.getY()) / getHeight());
+          if ((e.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK) == InputEvent.BUTTON1_DOWN_MASK) {
+            int v = (int) ((getMaximum() * (float) (getHeight() - e.getY())) / getHeight());
             setValue(v);
             setFileModified();
           }
@@ -540,8 +543,8 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
         @Override
         public void mouseMoved(MouseEvent e) {
           // System.out.println("moved ");
-          if ((e.getModifiersEx() & MouseEvent.BUTTON1_DOWN_MASK) == MouseEvent.BUTTON1_DOWN_MASK) {
-            int v = (int) (getMaximum() * (float) (getHeight() - e.getY()) / getHeight());
+          if ((e.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK) == InputEvent.BUTTON1_DOWN_MASK) {
+            int v = (int) ((getMaximum() * (float) (getHeight() - e.getY())) / getHeight());
             setValue(v);
             setFileModified();
           }
@@ -701,19 +704,23 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
     jLabel5 = new javax.swing.JLabel();
     setName("CochleaAMS1cControlPanel"); // NOI18N
     addAncestorListener(new javax.swing.event.AncestorListener() {
+      @Override
       public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
       }
 
+      @Override
       public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
         formAncestorAdded(evt);
       }
 
+      @Override
       public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
       }
     });
     setLayout(new java.awt.BorderLayout());
     tabbedPane.setToolTipText("Select tab for aspect of configuration");
     tabbedPane.addMouseListener(new java.awt.event.MouseAdapter() {
+      @Override
       public void mouseClicked(java.awt.event.MouseEvent evt) {
         tabbedPaneMouseClicked(evt);
       }
@@ -724,6 +731,7 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
     jLabel3.setText("Buffer bias");
     bufferBiasPanel.add(jLabel3);
     bufferBiasSlider.addChangeListener(new javax.swing.event.ChangeListener() {
+      @Override
       public void stateChanged(javax.swing.event.ChangeEvent evt) {
         bufferBiasSliderStateChanged(evt);
       }
@@ -749,11 +757,13 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
     dacCmdComboBox.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
     dacCmdComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "000000 000000", "ffffff ffffff" }));
     dacCmdComboBox.addItemListener(new java.awt.event.ItemListener() {
+      @Override
       public void itemStateChanged(java.awt.event.ItemEvent evt) {
         dacCmdComboBoxItemStateChanged(evt);
       }
     });
     dacCmdComboBox.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         dacCmdComboBoxActionPerformed(evt);
       }
@@ -767,6 +777,7 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
     initDACButton.setText("initDAC()");
     initDACButton.setToolTipText("sends vendor request to initialize DAC to default firmware state");
     initDACButton.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         initDACButtonActionPerformed(evt);
       }
@@ -786,6 +797,7 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
     dacPowerButtonGroup.add(dacPoweronButton);
     dacPoweronButton.setText("Power on");
     dacPoweronButton.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         dacPoweronButtonActionPerformed(evt);
       }
@@ -794,6 +806,7 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
     dacPowerButtonGroup.add(dacPoweroffButton);
     dacPoweroffButton.setText("Power off");
     dacPoweroffButton.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         dacPoweroffButtonActionPerformed(evt);
       }
@@ -813,6 +826,7 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
     resetEqBut.setText("Reset all");
     resetEqBut.setToolTipText("Uses hardware reset to reset all latches to default state");
     resetEqBut.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         resetEqButActionPerformed(evt);
       }
@@ -832,6 +846,7 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
     allmaxsosqualbut.setToolTipText("Set sliders to maximum value");
     allmaxsosqualbut.setMargin(new java.awt.Insets(1, 1, 1, 1));
     allmaxsosqualbut.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         allmaxsosqualbutActionPerformed(evt);
       }
@@ -840,6 +855,7 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
     allmidsosqualbut.setText("mid");
     allmidsosqualbut.setMargin(new java.awt.Insets(1, 1, 1, 1));
     allmidsosqualbut.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         allmidsosqualbutActionPerformed(evt);
       }
@@ -848,6 +864,7 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
     allminsosqualbut.setText("min");
     allminsosqualbut.setMargin(new java.awt.Insets(1, 1, 1, 1));
     allminsosqualbut.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         allminsosqualbutActionPerformed(evt);
       }
@@ -866,6 +883,7 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
     allmaxbpfqualbut.setText("max");
     allmaxbpfqualbut.setMargin(new java.awt.Insets(1, 1, 1, 1));
     allmaxbpfqualbut.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         allmaxbpfqualbutActionPerformed(evt);
       }
@@ -874,6 +892,7 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
     allmidbpfqualbut.setText("mid");
     allmidbpfqualbut.setMargin(new java.awt.Insets(1, 1, 1, 1));
     allmidbpfqualbut.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         allmidbpfqualbutActionPerformed(evt);
       }
@@ -882,6 +901,7 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
     allminbpfqualbut.setText("min");
     allminbpfqualbut.setMargin(new java.awt.Insets(1, 1, 1, 1));
     allminbpfqualbut.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         allminbpfqualbutActionPerformed(evt);
       }
@@ -901,6 +921,7 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
     killalllpfbut.setText("all");
     killalllpfbut.setMargin(new java.awt.Insets(1, 1, 1, 1));
     killalllpfbut.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         killalllpfbutActionPerformed(evt);
       }
@@ -909,6 +930,7 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
     unkillalllpfbut.setText("none");
     unkillalllpfbut.setMargin(new java.awt.Insets(1, 1, 1, 1));
     unkillalllpfbut.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         unkillalllpfbutActionPerformed(evt);
       }
@@ -928,6 +950,7 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
     killallbpfbut.setText("all");
     killallbpfbut.setMargin(new java.awt.Insets(1, 1, 1, 1));
     killallbpfbut.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         killallbpfbutActionPerformed(evt);
       }
@@ -936,6 +959,7 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
     unkillallbpfbut.setText("none");
     unkillallbpfbut.setMargin(new java.awt.Insets(1, 1, 1, 1));
     unkillallbpfbut.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         unkillallbpfbutActionPerformed(evt);
       }
@@ -972,6 +996,7 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
     scanSelGroup.add(basmemBut);
     basmemBut.setText("Basilar membrane voltage");
     basmemBut.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         basmemButActionPerformed(evt);
       }
@@ -979,6 +1004,7 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
     scanSelGroup.add(gangcellBut);
     gangcellBut.setText("Ganglion cell Vmem");
     gangcellBut.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         gangcellButActionPerformed(evt);
       }
@@ -1030,6 +1056,7 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
         org.jdesktop.beansbinding.ELProperty.create("${scanX}"), scanSpinner, org.jdesktop.beansbinding.BeanProperty.create("value"));
     bindingGroup.addBinding(binding);
     scanSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+      @Override
       public void stateChanged(javax.swing.event.ChangeEvent evt) {
         scanSpinnerStateChanged(evt);
       }
@@ -1057,6 +1084,7 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
     onchipGainGroup.add(onchipLowB);
     onchipLowB.setText("low");
     onchipLowB.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         onchipLowBActionPerformed(evt);
       }
@@ -1065,6 +1093,7 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
     onchipGainGroup.add(onchipMedB);
     onchipMedB.setText("medium");
     onchipMedB.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         onchipMedBActionPerformed(evt);
       }
@@ -1073,6 +1102,7 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
     onchipGainGroup.add(onchipHighB);
     onchipHighB.setText("high");
     onchipHighB.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         onchipHighBActionPerformed(evt);
       }
@@ -1081,6 +1111,7 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
     onchipGainGroup.add(onchipHighestB);
     onchipHighestB.setText("highest");
     onchipHighestB.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         onchipHighestBActionPerformed(evt);
       }
@@ -1102,6 +1133,7 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
     offchipGainLeftGroup.add(offchipLeftGainLowBut);
     offchipLeftGainLowBut.setText("low (40dB)");
     offchipLeftGainLowBut.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         offchipLeftGainLowButActionPerformed(evt);
       }
@@ -1110,6 +1142,7 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
     offchipGainLeftGroup.add(offchipLeftGainMedBut);
     offchipLeftGainMedBut.setText("medium (50dB)");
     offchipLeftGainMedBut.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         offchipLeftGainMedButActionPerformed(evt);
       }
@@ -1118,6 +1151,7 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
     offchipGainLeftGroup.add(offchipLeftGainHighBut);
     offchipLeftGainHighBut.setText("high (60dB)");
     offchipLeftGainHighBut.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         offchipLeftGainHighButActionPerformed(evt);
       }
@@ -1129,6 +1163,7 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
     offchipARGroup.add(arFastBut);
     arFastBut.setText("fast release (1:500)");
     arFastBut.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         arFastButActionPerformed(evt);
       }
@@ -1137,6 +1172,7 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
     offchipARGroup.add(arMedBut);
     arMedBut.setText("medium release (1:2000)");
     arMedBut.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         arMedButActionPerformed(evt);
       }
@@ -1145,6 +1181,7 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
     offchipARGroup.add(arSlowBut);
     arSlowBut.setText("slow release (1:4000)");
     arSlowBut.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         arSlowButActionPerformed(evt);
       }
@@ -1156,6 +1193,7 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
     offchipGainRightGroup.add(offchipRightGainLowBut);
     offchipRightGainLowBut.setText("low (40dB)");
     offchipRightGainLowBut.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         offchipRightGainLowButActionPerformed(evt);
       }
@@ -1164,6 +1202,7 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
     offchipGainRightGroup.add(offchipRightGainMedBut);
     offchipRightGainMedBut.setText("medium (50dB)");
     offchipRightGainMedBut.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         offchipRightGainMedButActionPerformed(evt);
       }
@@ -1172,6 +1211,7 @@ public final class CochleaAMS1cControlPanel extends javax.swing.JPanel implement
     offchipGainRightGroup.add(offchipRightGainHighBut);
     offchipRightGainHighBut.setText("high (60dB)");
     offchipRightGainHighBut.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         offchipRightGainHighButActionPerformed(evt);
       }

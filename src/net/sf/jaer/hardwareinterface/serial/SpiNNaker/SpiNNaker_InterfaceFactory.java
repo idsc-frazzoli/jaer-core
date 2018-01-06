@@ -14,10 +14,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.net.DatagramSocket;
-import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
@@ -97,7 +97,7 @@ public class SpiNNaker_InterfaceFactory extends javax.swing.JDialog implements H
     focusLast();
   }
 
-  private HashMap<String, HardwareInterface> closemap = new HashMap();
+  private Map<String, HardwareInterface> closemap = new HashMap<>();
 
   private void closePrevious(String s) {
     HardwareInterface hardwareInterface = closemap.get(s);
@@ -146,7 +146,7 @@ public class SpiNNaker_InterfaceFactory extends javax.swing.JDialog implements H
   @Override
   public JDialog getInterfaceChooser(AEChip chip) {
     setTitle("Choose interface for " + chip);
-    if (chip != null && chip.getAeViewer() != null) {
+    if ((chip != null) && (chip.getAeViewer() != null)) {
       setLocationRelativeTo(chip.getAeViewer());
     }
     return this;
@@ -181,12 +181,14 @@ public class SpiNNaker_InterfaceFactory extends javax.swing.JDialog implements H
     pingButton = new javax.swing.JButton();
     setTitle("Interface Chooser");
     addWindowListener(new java.awt.event.WindowAdapter() {
+      @Override
       public void windowClosing(java.awt.event.WindowEvent evt) {
         closeDialog(evt);
       }
     });
     cancelButton.setText("Cancel");
     cancelButton.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         cancelButtonActionPerformed(evt);
       }
@@ -200,6 +202,7 @@ public class SpiNNaker_InterfaceFactory extends javax.swing.JDialog implements H
     okSocketButton.setText("Open network interface");
     okSocketButton.setToolTipText("Tries to open the TCP socket. ");
     okSocketButton.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         okSocketButtonActionPerformed(evt);
       }
@@ -209,6 +212,7 @@ public class SpiNNaker_InterfaceFactory extends javax.swing.JDialog implements H
     defaultsButton.setText("Defaults");
     defaultsButton.setToolTipText("Enters default values");
     defaultsButton.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         defaultsButtonActionPerformed(evt);
       }
@@ -216,6 +220,7 @@ public class SpiNNaker_InterfaceFactory extends javax.swing.JDialog implements H
     pingButton.setText("Ping");
     pingButton.setToolTipText("Ping this host to see if it is there");
     pingButton.addActionListener(new java.awt.event.ActionListener() {
+      @Override
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         pingButtonActionPerformed(evt);
       }
@@ -292,7 +297,7 @@ public class SpiNNaker_InterfaceFactory extends javax.swing.JDialog implements H
     String host = hostTF.getText();
     try {
       setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-      InetAddress adr = Inet4Address.getByName(host);
+      InetAddress adr = InetAddress.getByName(host);
       try {
         adr.isReachable(3000);
         JOptionPane.showMessageDialog(this, host + " is reachable, but it may not be the SpiNNaker!");

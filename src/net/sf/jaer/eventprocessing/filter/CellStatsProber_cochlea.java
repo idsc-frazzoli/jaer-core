@@ -13,12 +13,14 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Logger;
 
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.GL2GL3;
+import com.jogamp.opengl.GL2ES3;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.awt.TextRenderer;
@@ -48,12 +50,12 @@ import net.sf.jaer.util.filter.LowpassFilter;
  * This is part of jAER <a href="http://jaerproject.net/">jaerproject.net</a>,
  * licensed under the LGPL (<a
  * href="http://en.wikipedia.org/wiki/GNU_Lesser_General_Public_License">http://en.wikipedia.org/wiki/GNU_Lesser_General_Public_License</a>.
- * 
+ *
  * Originally done for the DVS camera (see net.sf.jaer.eventprocessing.filter.CellStatsProber.java)
- * 
+ *
  * This filter does the same for the cochleaAMS1b sensor.
  * @editor Philipp
- * 
+ *
  * TODO: -implement individual histograms for each cell
  * -read out of every ISI bin (right now decaying falsifies the results)
  * -correct use of "useRightEar" "useLeftEar"; at the moment if only one cell from right and one cell from left ear is chosen and one is not used there are too
@@ -188,7 +190,7 @@ public class CellStatsProber_cochlea extends EventFilter2DMouseAdaptor implement
     gl.glColor3fv(c, 0);
     gl.glLineWidth(lineWidth);
     gl.glTranslatef(-.5f, -.5f, 0);
-    gl.glBegin(GL2.GL_LINE_LOOP);
+    gl.glBegin(GL.GL_LINE_LOOP);
     gl.glVertex2f(selection.x, selection.y);
     gl.glVertex2f(selection.x + selection.width, selection.y);
     gl.glVertex2f(selection.x + selection.width, selection.y + selection.height);
@@ -257,6 +259,7 @@ public class CellStatsProber_cochlea extends EventFilter2DMouseAdaptor implement
     putBoolean("spikeSoundEnabled", spikeSoundEnabled);
   }
 
+  @Override
   public void mouseWheelMoved(MouseWheelEvent e) {
   }
 
@@ -476,7 +479,7 @@ public class CellStatsProber_cochlea extends EventFilter2DMouseAdaptor implement
     boolean initialized = false;
     float instantaneousRate = 0, filteredRate = 0;
     int count = 0;
-    private HashMap<Integer, ISIHist> histMap = new HashMap();
+    private Map<Integer, ISIHist> histMap = new HashMap<>();
     ISIHist globalHist = new ISIHist(-1);
     ISIHist[] averageTypeHistograms = null;
     private int nPixels = 0;
@@ -491,10 +494,10 @@ public class CellStatsProber_cochlea extends EventFilter2DMouseAdaptor implement
         if (inSelection(e)) {
           try {
             CochleaAMSEvent i = (CochleaAMSEvent) e;
-            if (useLeftEar == false && i.getEar() == Ear.LEFT) {
+            if ((useLeftEar == false) && (i.getEar() == Ear.LEFT)) {
               break;
             }
-            if (useRightEar == false && i.getEar() == Ear.RIGHT) {
+            if ((useRightEar == false) && (i.getEar() == Ear.RIGHT)) {
               break;
             }
             stats.count++;
@@ -574,20 +577,20 @@ public class CellStatsProber_cochlea extends EventFilter2DMouseAdaptor implement
 
     public void updateTime(int timestamp, ISIHist h, int j) {
       float avgDecay = averagingDecay * 1000000;
-      if (h.bins[j] != 0 && avgDecay != 0 && this.getLastTimestamp() - h.binstimestamps[j] > avgDecay) {
-        float decayconstant = (float) java.lang.Math.exp(((float) (float) h.binstimestamps[j] - this.getLastTimestamp()) / (float) avgDecay);
+      if ((h.bins[j] != 0) && (avgDecay != 0) && ((this.getLastTimestamp() - h.binstimestamps[j]) > avgDecay)) {
+        float decayconstant = (float) java.lang.Math.exp((h.binstimestamps[j] - this.getLastTimestamp()) / avgDecay);
         h.bins[j] = (int) (h.bins[j] * decayconstant);
       }
     }
 
     public void updateTimeMoreLess(int timestamp, ISIHist h) {
       float avgDecay = averagingDecay * 1000000;
-      if (h.lessCount != 0 && avgDecay != 0 && this.getLastTimestamp() - h.lessCountTimestamp > avgDecay) {
-        float decayconstant = (float) java.lang.Math.exp(-((float) this.getLastTimestamp() - (float) h.lessCountTimestamp) / (float) avgDecay);
+      if ((h.lessCount != 0) && (avgDecay != 0) && ((this.getLastTimestamp() - h.lessCountTimestamp) > avgDecay)) {
+        float decayconstant = (float) java.lang.Math.exp(-((float) this.getLastTimestamp() - (float) h.lessCountTimestamp) / avgDecay);
         h.lessCount = (int) (h.lessCount * decayconstant);
       }
-      if (h.moreCount != 0 && avgDecay != 0 && this.getLastTimestamp() - h.moreCountTimestamp > avgDecay) {
-        float decayconstant = (float) java.lang.Math.exp(-((float) this.getLastTimestamp() - (float) h.moreCountTimestamp) / (float) avgDecay);
+      if ((h.moreCount != 0) && (avgDecay != 0) && ((this.getLastTimestamp() - h.moreCountTimestamp) > avgDecay)) {
+        float decayconstant = (float) java.lang.Math.exp(-((float) this.getLastTimestamp() - (float) h.moreCountTimestamp) / avgDecay);
         h.moreCount = (int) (h.moreCount * decayconstant);
       }
     }
@@ -672,14 +675,14 @@ public class CellStatsProber_cochlea extends EventFilter2DMouseAdaptor implement
       void draw(GL2 gl) {
         float dx = (float) (chip.getSizeX() - 2) / (isiNumBins + 2);
         float sy = (float) (chip.getSizeY() - 2) / maxCount;
-        gl.glBegin(GL2.GL_LINES);
+        gl.glBegin(GL.GL_LINES);
         gl.glVertex2f(0, 0);
         gl.glVertex2f(chip.getSizeX(), 0);
         gl.glEnd();
         if (lessCount > 0) {
-          gl.glPushAttrib(GL2GL3.GL_COLOR | GL2.GL_LINE_WIDTH);
+          gl.glPushAttrib(GL2ES3.GL_COLOR | GL.GL_LINE_WIDTH);
           gl.glColor4fv(HIST_OVERFLOW_COLOR, 0);
-          gl.glBegin(GL2.GL_LINE_STRIP);
+          gl.glBegin(GL.GL_LINE_STRIP);
           float y = 0 + (sy * lessCount);
           float x1 = -dx, x2 = x1 + dx;
           gl.glVertex2f(x1, 0);
@@ -690,9 +693,9 @@ public class CellStatsProber_cochlea extends EventFilter2DMouseAdaptor implement
           gl.glPopAttrib();
         }
         if (moreCount > 0) {
-          gl.glPushAttrib(GL2GL3.GL_COLOR | GL2.GL_LINE_WIDTH);
+          gl.glPushAttrib(GL2ES3.GL_COLOR | GL.GL_LINE_WIDTH);
           gl.glColor4fv(HIST_OVERFLOW_COLOR, 0);
-          gl.glBegin(GL2.GL_LINE_STRIP);
+          gl.glBegin(GL.GL_LINE_STRIP);
           float y = 0 + (sy * moreCount);
           float x1 = 1 + (dx * (isiNumBins + 2)), x2 = x1 + dx;
           gl.glVertex2f(x1, 0);
@@ -703,7 +706,7 @@ public class CellStatsProber_cochlea extends EventFilter2DMouseAdaptor implement
           gl.glPopAttrib();
         }
         if (maxCount > 0) {
-          gl.glBegin(GL2.GL_LINE_STRIP);
+          gl.glBegin(GL.GL_LINE_STRIP);
           for (int i = 0; i < bins.length; i++) {
             float y = 0 + (sy * bins[i]);
             float x1 = 1 + (dx * i), x2 = x1 + dx;
@@ -717,7 +720,7 @@ public class CellStatsProber_cochlea extends EventFilter2DMouseAdaptor implement
       }
 
       void draw(GL2 gl, float lineWidth, float[] color) {
-        gl.glPushAttrib(GL2GL3.GL_COLOR | GL2.GL_LINE_WIDTH);
+        gl.glPushAttrib(GL2ES3.GL_COLOR | GL.GL_LINE_WIDTH);
         gl.glLineWidth(lineWidth);
         gl.glColor4fv(color, 0);
         draw(gl);
@@ -828,7 +831,7 @@ public class CellStatsProber_cochlea extends EventFilter2DMouseAdaptor implement
             renderer.draw3D(String.format("%.0f us", binTime), currentMousePoint.x - .5f, -9, 0, .2f);
             gl.glLineWidth(lineWidth);
             gl.glColor3fv(SELECT_COLOR, 0);
-            gl.glBegin(GL2.GL_LINES);
+            gl.glBegin(GL.GL_LINES);
             gl.glVertex2f((currentMousePoint.x - .5f), -9);
             gl.glVertex2f((currentMousePoint.x - .5f), chip.getSizeY());
             gl.glEnd();

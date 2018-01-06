@@ -1,6 +1,6 @@
 /**
  * @author Ilya Kiselev, ilya.fpga@gmail.com
- * 
+ *
  * Created on June 28, 2016, 14:08
  */
 package ch.unizh.ini.jaer.config;
@@ -54,18 +54,21 @@ public abstract class AbstractMultiBitRegisterCP extends JPanel implements State
    * @param actionsCollection
    * Collection of Arrays of action listeners for MultiBitConfigRegister components */
   public AbstractMultiBitRegisterCP(final MultiBitConfigRegister reg, final ActionsCollection actionsCollection) {
-    if (reg == null)
+    if (reg == null) {
       throw new IllegalArgumentException("Attempted to create a control panel for a non-existent register.");
-    if (actionsCollection == null)
+    }
+    if (actionsCollection == null) {
       throw new IllegalArgumentException("Attempted to create a control panel with not defined action listeners.");
+    }
     final int nFields = reg.fieldsNumber();
     boolean parametersMatch = (nFields == actionsCollection.ACTIONS.length);
     for (int i = 0; parametersMatch && (i < nFields); ++i) {
       parametersMatch = (actionsCollection.ACTIONS[i] instanceof SingleBitAction) && (reg.fieldConfig(i).length == 1);
       parametersMatch |= (actionsCollection.ACTIONS[i] instanceof MultiBitActions) && (reg.fieldConfig(i).length > 1);
     }
-    if (!parametersMatch)
+    if (!parametersMatch) {
       throw new IllegalArgumentException("Configurations of the register (" + reg + ") and the actions listeners (" + actionsCollection + ") do not match.");
+    }
     this.reg = reg;
     controls = new JComponent[nFields];
     setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
@@ -100,6 +103,7 @@ public abstract class AbstractMultiBitRegisterCP extends JPanel implements State
     addAncestorListener(new javax.swing.event.AncestorListener() {
       @Override
       public void ancestorMoved(final javax.swing.event.AncestorEvent evt) {
+        // ---
       }
 
       @Override
@@ -109,6 +113,7 @@ public abstract class AbstractMultiBitRegisterCP extends JPanel implements State
 
       @Override
       public void ancestorRemoved(final javax.swing.event.AncestorEvent evt) {
+        // ---
       }
     });
   }
@@ -167,6 +172,7 @@ public abstract class AbstractMultiBitRegisterCP extends JPanel implements State
       super(component);
     }
 
+    @Override
     public void actionPerformed(final ActionEvent e) {
       final JRadioButton button = (JRadioButton) e.getSource();
       final AbstractMultiBitRegisterCP embeddingCP = (AbstractMultiBitRegisterCP) button.getParent();

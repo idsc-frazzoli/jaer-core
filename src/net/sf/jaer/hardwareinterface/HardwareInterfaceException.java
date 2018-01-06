@@ -14,8 +14,8 @@ import net.sf.jaer.util.ExceptionListener;
 
 /** An exception in the hardware interface is signaled with this exception.
  * @author tobi */
-public class HardwareInterfaceException extends java.lang.Exception {
-  static private Set exceptionListeners = Collections.synchronizedSet(new HashSet<ExceptionListener>());
+public class HardwareInterfaceException extends Exception {
+  static private Set<ExceptionListener> exceptionListeners = Collections.synchronizedSet(new HashSet<ExceptionListener>());
 
   /** Creates a new instance of HardwareInterfaceException */
   public HardwareInterfaceException() {
@@ -24,7 +24,7 @@ public class HardwareInterfaceException extends java.lang.Exception {
   }
 
   /** Creates a new instance of HardwareInterfaceException with a message
-   * 
+   *
    * @param s the message */
   public HardwareInterfaceException(String s) {
     super(s);
@@ -32,7 +32,7 @@ public class HardwareInterfaceException extends java.lang.Exception {
   }
 
   /** Creates a new instance of HardwareInterfaceException with a message and cause
-   * 
+   *
    * @param s the message
    * @param cause the cause */
   public HardwareInterfaceException(String message, Throwable cause) {
@@ -46,9 +46,9 @@ public class HardwareInterfaceException extends java.lang.Exception {
       return;
     }
     synchronized (exceptionListeners) {
-      Iterator iter = exceptionListeners.iterator();
+      Iterator<ExceptionListener> iter = exceptionListeners.iterator();
       while (iter.hasNext()) {
-        ExceptionListener l = (ExceptionListener) iter.next();
+        ExceptionListener l = iter.next();
         l.exceptionOccurred(x, this);
       }
     }
@@ -56,7 +56,6 @@ public class HardwareInterfaceException extends java.lang.Exception {
 
   /** Listeners can be added for exceptions - e.g. GUI elements that show status
    * @param l the listener */
-  @SuppressWarnings("unchecked")
   static public void addExceptionListener(ExceptionListener l) {
     if (l != null) {
       exceptionListeners.add(l);
@@ -64,7 +63,7 @@ public class HardwareInterfaceException extends java.lang.Exception {
   }
 
   /** Removes exception listener
-   * 
+   *
    * @param l the listener */
   static public void removeExceptionListener(ExceptionListener l) {
     exceptionListeners.remove(l);
