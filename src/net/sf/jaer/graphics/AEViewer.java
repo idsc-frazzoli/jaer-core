@@ -82,9 +82,9 @@ import javax.swing.JSeparator;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 
-import ch.ethz.idsc.retina.demo.DavisSerial;
+import ch.ethz.idsc.demo.DavisSerial;
+import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.retina.dev.davis.DavisApsType;
-import ch.ethz.idsc.retina.gui.gokart.GokartLcmChannel;
 import ch.ethz.idsc.retina.lcm.davis.DavisLcmServer;
 import ch.unizh.ini.jaer.chip.cochlea.CochleaAMS1c;
 import ch.unizh.ini.jaer.chip.retina.DVS128;
